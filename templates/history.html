@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}History — CyberSentinel{% endblock %}
+
+{% block content %}
+<h2 class="cs-section-title mb-4"><i class="fa-solid fa-clock-rotate-left"></i> Scan History</h2>
+
+<form class="mb-4" method="get">
+  <div class="input-group">
+    <input type="text" class="form-control cs-input" name="q" value="{{ q }}" placeholder="Search by target...">
+    <button class="btn cs-btn-outline" type="submit"><i class="fa-solid fa-search"></i></button>
+  </div>
+</form>
+
+{% if scans %}
+<div class="table-responsive">
+  <table class="table cs-table align-middle">
+    <thead>
+      <tr>
+        <th>#</th><th>Target</th><th>Type</th><th>Date</th><th>Duration</th><th>Status</th><th>Risk</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in scans %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.target }}</td>
+        <td>{{ s.scan_type }}</td>
+        <td>{{ s.started_at[:19].replace('T', ' ') }}</td>
+        <td>{{ '%.1f'|format(s.duration_seconds) + 's' if s.duration_seconds else '—' }}</td>
+        <td><span class="badge cs-badge-{{ s.status }}">{{ s.status }}</span></td>
+        <td>
+          {% if s.risk_level %}
+            <span class="badge cs-risk-{{ s.risk_level|lower }}">{{ s.risk_level }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('report_view', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline">View</a>
+          {% if s.status == 'finished' %}
+          <a href="{{ url_for('report_pdf', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline"><i class="fa-solid fa-file-pdf"></i></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">No scans found.</p>
+{% endif %}
+{% endblock %}

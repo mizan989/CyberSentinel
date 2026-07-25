@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}CyberSentinel{% endblock %}
+
+{% block content %}
+<section class="cs-hero text-center py-5 mb-4">
+  <i class="fa-solid fa-shield-halved cs-hero-icon"></i>
+  <h1 class="cs-title mt-3">CyberSentinel</h1>
+  <p class="lead cs-subtitle">Automated Vulnerability Scanner &amp; Reporting Dashboard</p>
+  <a href="{{ url_for('discover_page') }}" class="btn cs-btn-primary btn-lg mt-2">
+    <i class="fa-solid fa-network-wired"></i> Discover Network
+  </a>
+  <a href="{{ url_for('scan_page') }}" class="btn cs-btn-outline btn-lg mt-2">
+    <i class="fa-solid fa-magnifying-glass-chart"></i> Scan a Known Target
+  </a>
+</section>
+
+<section class="row g-3 mb-5">
+  <div class="col-6 col-md-3">
+    <div class="cs-card text-center p-3">
+      <div class="cs-stat">{{ stats.total_scans }}</div>
+      <div class="cs-stat-label">Total Scans</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="cs-card text-center p-3">
+      <div class="cs-stat">{{ stats.hosts }}</div>
+      <div class="cs-stat-label">Hosts</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="cs-card text-center p-3">
+      <div class="cs-stat">{{ stats.open_ports }}</div>
+      <div class="cs-stat-label">Open Ports</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="cs-card text-center p-3">
+      <div class="cs-stat">{{ stats.vulnerabilities }}</div>
+      <div class="cs-stat-label">Vulnerabilities</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h4 class="cs-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Latest Reports</h4>
+  {% if latest %}
+  <div class="table-responsive">
+    <table class="table cs-table align-middle">
+      <thead>
+        <tr>
+          <th>Target</th><th>Type</th><th>Date</th><th>Status</th><th>Risk</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in latest %}
+        <tr>
+          <td>{{ s.target }}</td>
+          <td>{{ s.scan_type }}</td>
+          <td>{{ s.started_at[:19].replace('T', ' ') }}</td>
+          <td><span class="badge cs-badge-{{ s.status }}">{{ s.status }}</span></td>
+          <td>
+            {% if s.risk_level %}
+              <span class="badge cs-risk-{{ s.risk_level|lower }}">{{ s.risk_level }}</span>
+            {% else %}—{% endif %}
+          </td>
+          <td><a href="{{ url_for('report_view', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No scans yet. <a href="{{ url_for('scan_page') }}">Run your first scan</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

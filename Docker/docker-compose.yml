@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile
+    container_name: cybersentinel_web
+    restart: unless-stopped
+    volumes:
+      - ../database.db:/app/database.db
+      - ../reports_output:/app/reports_output
+      - ../scans:/app/scans
+    expose:
+      - "5000"
+    environment:
+      - CYBERSENTINEL_SECRET_KEY=change-me-in-production
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: cybersentinel_nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      # - "443:443"   # enable once you mount TLS certs below
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # - ./certs:/etc/nginx/certs:ro

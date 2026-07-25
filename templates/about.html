@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}About — CyberSentinel{% endblock %}
+
+{% block content %}
+<h2 class="cs-section-title mb-4"><i class="fa-solid fa-circle-info"></i> How It Works</h2>
+
+<div class="cs-card p-4 mb-4">
+  <h5 class="cs-card-title">Scan Workflow</h5>
+  <ol class="cs-list">
+    <li>You choose an <strong>approved demonstration target</strong> and a scan profile.</li>
+    <li>The target is checked against a hard-coded allowlist &mdash; anything else is rejected.</li>
+    <li>Nmap runs host discovery and service/version detection.</li>
+    <li>Results are parsed into structured data (open ports, services, versions, OS guess).</li>
+    <li>Each detected service is checked against a small offline CVE lookup table.</li>
+    <li>A 0&ndash;100 risk score is calculated from the severities found.</li>
+    <li>Everything is saved to the database and rendered as an HTML + downloadable PDF report.</li>
+  </ol>
+</div>
+
+<div class="cs-card p-4 mb-4">
+  <h5 class="cs-card-title">Responsible Use</h5>
+  <p class="mb-2">
+    CyberSentinel is a <strong>portfolio / educational project</strong>. It does not exploit
+    anything &mdash; it only performs read-only discovery and reporting, and only against
+    hosts that have explicitly opted in to being scanned for demonstration purposes
+    (such as <code>scanme.nmap.org</code>, which Nmap's own maintainers provide for exactly
+    this kind of testing).
+  </p>
+  <p class="mb-0">
+    Scanning systems you don't own or have explicit written authorization to test is illegal
+    in most jurisdictions. If you deploy this project, keep the allowlist in <code>config.py</code>
+    restricted to targets you are authorized to scan.
+  </p>
+</div>
+
+<div class="cs-card p-4 mb-4">
+  <h5 class="cs-card-title">Tech Stack</h5>
+  <div class="row">
+    <div class="col-md-6">
+      <strong>Backend</strong>
+      <ul class="cs-list">
+        <li>Python 3.12 + Flask</li>
+        <li>python-nmap</li>
+        <li>SQLite</li>
+        <li>Jinja2</li>
+        <li>ReportLab (PDF generation)</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <strong>Frontend</strong>
+      <ul class="cs-list">
+        <li>Bootstrap 5</li>
+        <li>Chart.js</li>
+        <li>Vanilla JavaScript (ES6)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cs-card p-4 mb-4">
+  <h5 class="cs-card-title">Author & Disclaimer</h5>
+  <p class="mb-2">
+    Developed by Md Mizan as a personal portfolio project to demonstrate 
+    full-stack development and security-automation skills. This tool is provided 
+    for educational and authorized demonstration purposes only. It is designed 
+    to scan solely pre-approved demonstration targets and private/local network 
+    addresses under the user's own control. The author does not condone, and 
+    accepts no responsibility or liability for, any unauthorized, unlawful, or 
+    malicious use of this software by any third party. Scanning systems, 
+    networks, or devices without explicit authorization from their owner is 
+    illegal in most jurisdictions, and any individual who uses this tool to do 
+    so does so entirely at their own risk and is solely responsible for their 
+    actions.
+  </p>
+</div>
+{% endblock %}

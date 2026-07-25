@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CyberSentinel{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg cs-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand cs-brand" href="{{ url_for('home') }}">
+        <i class="fa-solid fa-shield-halved"></i> CyberSentinel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('discover_page') }}">Discover</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('scan_page') }}">Scan</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('history') }}">History</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="cs-footer text-center py-4 mt-5">
+    <div class="container">
+      <small>CyberSentinel &mdash; Built by Md Mizan for authorized demo use only. Scans are restricted to explicitly authorized targets only.</small>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

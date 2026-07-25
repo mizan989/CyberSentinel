@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Report #{{ scan.id }} — CyberSentinel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+  <div>
+    <h2 class="cs-section-title mb-1"><i class="fa-solid fa-file-shield"></i> Report #{{ scan.id }}</h2>
+    <div class="text-muted">{{ scan.target }}</div>
+  </div>
+  {% if scan.status == 'finished' %}
+  <a href="{{ url_for('report_pdf', scan_id=scan.id) }}" class="btn cs-btn-primary">
+    <i class="fa-solid fa-file-pdf"></i> Download PDF
+  </a>
+  {% endif %}
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+
+    <div class="cs-card p-4 mb-4">
+      <h5 class="cs-card-title">General Information</h5>
+      <table class="table cs-table-plain mb-0">
+        <tr><th>Target</th><td>{{ scan.target }}</td></tr>
+        <tr><th>Hostname</th><td>{{ scan.hostname or scan.target }}</td></tr>
+        <tr><th>Scan Type</th><td>{{ scan.scan_type }}</td></tr>
+        <tr><th>Scan Date</th><td>{{ scan.started_at[:19].replace('T', ' ') }}</td></tr>
+        <tr><th>Duration</th><td>{{ '%.1f'|format(scan.duration_seconds) + 's' if scan.duration_seconds else '—' }}</td></tr>
+        <tr><th>Status</th><td><span class="badge cs-badge-{{ scan.status }}">{{ scan.status }}</span></td></tr>
+      </table>
+      {% if scan.error %}
+      <div class="alert alert-danger mt-3 mb-0">{{ scan.error }}</div>
+      {% endif %}
+    </div>
+
+    <div class="cs-card p-4 mb-4">
+      <h5 class="cs-card-title">Operating System</h5>
+      <p class="mb-0">{{ scan.os_guess or 'Not determined' }}</p>
+    </div>
+
+    <div class="cs-card p-4 mb-4">
+      <h5 class="cs-card-title">Open Ports &amp; Services</h5>
+      {% if scan.services %}
+      <div class="table-responsive">
+        <table class="table cs-table align-middle mb-0">
+          <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Version</th><th>State</th></tr></thead>
+          <tbody>
+            {% for s in scan.services %}
+            <tr>
+              <td>{{ s.port }}</td><td>{{ s.protocol }}</td><td>{{ s.service }}</td>
+              <td>{{ s.version }}</td><td>{{ s.state }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted mb-0">No open ports/services detected.</p>
+      {% endif %}
+    </div>
+
+    <div class="cs-card p-4 mb-4">
+      <h5 class="cs-card-title">Detected Vulnerabilities</h5>
+      {% if scan.vulnerabilities %}
+        {% for v in scan.vulnerabilities %}
+        <div class="cs-vuln-item mb-3 pb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="badge cs-risk-{{ v.severity|lower }}">{{ v.severity }}</span>
+            <span class="text-muted small">{{ v.cve }}</span>
+          </div>
+          <div class="fw-semibold mt-1">{{ v.service }} {{ v.version }}</div>
+          <p class="mb-1 mt-1">{{ v.description }}</p>
+          <p class="mb-0 text-muted"><i>Recommendation:</i> {{ v.recommendation }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+      <p class="text-muted mb-0">No vulnerabilities matched in the offline database.</p>
+      {% endif %}
+    </div>
+
+    <div class="cs-card p-4">
+      <h5 class="cs-card-title">Recommendations</h5>
+      <p class="mb-0 text-muted">
+        This report uses a small offline CVE lookup table for demonstration purposes
+        and simple substring version matching. It is not a substitute for a
+        production-grade vulnerability management tool. Always confirm exposure
+        manually before remediating.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cs-card p-4 mb-4 text-center">
+      <h5 class="cs-card-title">Risk Score</h5>
+      <div class="cs-risk-score cs-risk-{{ (scan.risk_level or 'informational')|lower }}">
+        {{ scan.risk_score if scan.risk_score is not none else '—' }}
+      </div>
+      <div class="cs-stat-label">{{ scan.risk_level or 'Not scored' }}</div>
+    </div>
+
+    {% if scan.vulnerabilities %}
+    <div class="cs-card p-4">
+      <h5 class="cs-card-title">Severity Breakdown</h5>
+      <canvas id="severityChart" height="220"></canvas>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if scan.vulnerabilities %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const counts = {};
+  {% for v in scan.vulnerabilities %}
+  counts["{{ v.severity }}"] = (counts["{{ v.severity }}"] || 0) + 1;
+  {% endfor %}
+  const order = ["Critical", "High", "Medium", "Low", "Informational"];
+  const colorMap = {
+    Critical: "#D32F2F", High: "#F57C00", Medium: "#FBC02D",
+    Low: "#388E3C", Informational: "#1976D2"
+  };
+  const labels = order.filter(k => counts[k]);
+  const data = labels.map(k => counts[k]);
+  const bg = labels.map(k => colorMap[k]);
+
+  new Chart(document.getElementById("severityChart"), {
+    type: "doughnut",
+    data: { labels, datasets: [{ data, backgroundColor: bg, borderWidth: 0 }] },
+    options: {
+      plugins: { legend: { labels: { color: "#E5E5E5" } } },
+      cutout: "65%"
+    }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

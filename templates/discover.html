@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Discover Network — CyberSentinel{% endblock %}
+
+{% block content %}
+<h2 class="cs-section-title mb-2"><i class="fa-solid fa-network-wired"></i> Discover Network</h2>
+<p class="text-muted mb-4">
+  Finds live devices on your local network so you can pick one to scan.
+  Only ever scans private/LAN address ranges &mdash; never the public internet.
+</p>
+
+<div class="cs-card p-4 mb-4">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-6">
+      <label class="form-label">Subnet (optional)</label>
+      <input type="text" class="form-control cs-input" id="subnetInput" placeholder="auto-detect (e.g. 192.168.1.0/24)">
+    </div>
+    <div class="col-md-6">
+      <button class="btn cs-btn-primary" id="discoverBtn">
+        <i class="fa-solid fa-satellite-dish"></i> Scan Network
+      </button>
+    </div>
+  </div>
+  <div id="discoverStatus" class="cs-progress-label mt-3"></div>
+</div>
+
+<div id="resultsCard" class="cs-card p-4 d-none">
+  <h5 class="cs-card-title mb-1">Devices found on <span id="subnetLabel"></span></h5>
+  <div class="table-responsive mt-3">
+    <table class="table cs-table align-middle">
+      <thead>
+        <tr><th>IP Address</th><th>Hostname</th><th>MAC Address</th><th>Vendor</th><th></th></tr>
+      </thead>
+      <tbody id="devicesBody"></tbody>
+    </table>
+  </div>
+  <p class="text-muted small mb-0">
+    MAC/vendor info may show "unknown" unless the app is run with elevated
+    (root/admin) privileges &mdash; IP and hostname still work either way.
+  </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("discoverBtn");
+  const status = document.getElementById("discoverStatus");
+  const resultsCard = document.getElementById("resultsCard");
+  const subnetLabel = document.getElementById("subnetLabel");
+  const devicesBody = document.getElementById("devicesBody");
+
+  btn.addEventListener("click", async function () {
+    btn.disabled = true;
+    status.textContent = "Scanning network... this can take a few seconds.";
+    resultsCard.classList.add("d-none");
+
+    const subnet = document.getElementById("subnetInput").value.trim();
+
+    try {
+      const res = await fetch("/api/discover", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subnet: subnet || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Discovery failed.");
+
+      subnetLabel.textContent = data.subnet;
+      devicesBody.innerHTML = "";
+
+      if (data.devices.length === 0) {
+        status.textContent = "No devices found. Try specifying a subnet manually.";
+      } else {
+        status.textContent = `Found ${data.devices.length} device(s).`;
+        data.devices.forEach((d) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${d.ip}${d.is_this_device ? ' <span class="badge cs-badge-finished">this device</span>' : ""}</td>
+            <td>${d.hostname || "—"}</td>
+            <td>${d.mac}</td>
+            <td>${d.vendor}</td>
+            <td><a class="btn btn-sm cs-btn-outline" href="/scan?target=${encodeURIComponent(d.ip)}">
+                  <i class="fa-solid fa-magnifying-glass-chart"></i> Scan</a></td>
+          `;
+          devicesBody.appendChild(tr);
+        });
+        resultsCard.classList.remove("d-none");
+      }
+    } catch (err) {
+      status.textContent = err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+});
+</script>
+{% endblock %}
