@@ -1,4 +1,4 @@
-# CyberSentinel
+# [CyberSentinel](https://cybersentinel-mizan.onrender.com/)
 
 Automated Vulnerability Scanner & Reporting Dashboard — a portfolio project
 demonstrating full-stack Python + basic security-automation skills.
@@ -105,7 +105,3 @@ dictionary of service → known CVE rules with simple substring version
 matching. It's intentionally offline/static for a demo. To make this more
 rigorous, you'd swap in proper CPE-based matching against the NVD API — just
 be mindful that adds an external network dependency at scan/report time.
-
-## License
-
-MIT — see `LICENSE`.
