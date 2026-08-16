@@ -1,0 +1,35 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Database files
+*.db
+*.sqlite3
+
+# Runtime outputs (keep folder with .gitkeep)
+reports_output/*
+!reports_output/.gitkeep
+scans/*
+!scans/.gitkeep
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
