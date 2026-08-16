@@ -1,90 +1,253 @@
 {% extends "base.html" %}
-{% block title %}Scan — CyberSentinel{% endblock %}
+{% block title %}Start Scan — CyberSentinel{% endblock %}
 
 {% block content %}
-<h2 class="cs-section-title mb-4"><i class="fa-solid fa-magnifying-glass-chart"></i> Start Scan</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-10">
 
-<div class="cs-card p-4 mb-4">
-  <form id="scanForm" autocomplete="off">
-    <div class="mb-3">
-      <label class="form-label">Target</label>
-      <input type="text" class="form-control cs-input" id="targetSelect"
-             list="targetOptions" value="{{ prefill_target }}"
-             placeholder="e.g. scanme.nmap.org or 192.168.1.42">
-      <datalist id="targetOptions">
-        {% for t in allowed_targets %}
-        <option value="{{ t }}">{{ t }}</option>
-        {% endfor %}
-      </datalist>
-      <div class="form-text">
-        Fixed demo hosts, or any private/LAN IP address (see
-        <a href="{{ url_for('discover_page') }}">Discover Network</a> to find devices on your network).
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4" data-animate="fade-up">
+      <div>
+        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-magnifying-glass-chart"></i> Vulnerability Scanner</h2>
+        <p class="text-muted small mb-0">Run deterministic port scanning, service identification, and offline CVE correlation.</p>
+      </div>
+      <a href="{{ url_for('discover_page') }}" class="btn btn-sm cs-btn-outline">
+        <i class="fa-solid fa-network-wired"></i> Discover LAN Devices
+      </a>
+    </div>
+
+    <!-- Scan Form Card -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" id="scanSetupCard" data-animate="fade-up">
+      <form id="scanForm" autocomplete="off">
+        
+        <!-- Target Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-bold d-flex justify-content-between align-items-center">
+            <span>Target Host / IP</span>
+            <span class="badge bg-dark-subtle text-muted border border-secondary small">Demo Allowlist Active</span>
+          </label>
+          <div class="input-group mb-2">
+            <span class="input-group-text cs-input border-end-0 text-muted"><i class="fa-solid fa-crosshairs"></i></span>
+            <input type="text" class="form-control cs-input border-start-0 font-mono" id="targetSelect"
+                   list="targetOptions" value="{{ prefill_target }}"
+                   placeholder="e.g. scanme.nmap.org or 127.0.0.1" required>
+          </div>
+          <datalist id="targetOptions">
+            {% for t in allowed_targets %}
+            <option value="{{ t }}">{{ t }}</option>
+            {% endfor %}
+          </datalist>
+
+          <!-- Quick Select Target Chips -->
+          <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+            <span class="small text-muted me-1">Quick Select:</span>
+            {% for t in allowed_targets %}
+            <span class="cs-pill-target" onclick="selectTarget('{{ t }}')">
+              <i class="fa-solid fa-server me-1 small"></i>{{ t }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Scan Profile Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-bold mb-3">Scan Profile</label>
+          <div class="row g-3" id="profileContainer">
+            {% for key, profile in scan_profiles.items() %}
+            <div class="col-sm-6 col-md-3">
+              <div class="cs-profile-card {% if loop.first %}selected{% endif %}" data-profile="{{ key }}" onclick="selectProfile('{{ key }}')">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="fw-bold text-light">
+                    {% if key == 'quick' %}<i class="fa-solid fa-bolt text-warning me-1"></i>{% endif %}
+                    {% if key == 'full' %}<i class="fa-solid fa-layer-group text-info me-1"></i>{% endif %}
+                    {% if key == 'intense' %}<i class="fa-solid fa-fire text-danger me-1"></i>{% endif %}
+                    {% if key == 'custom' %}<i class="fa-solid fa-sliders text-success me-1"></i>{% endif %}
+                    {{ profile.label }}
+                  </div>
+                </div>
+                <div class="text-muted small" style="font-size: 0.8rem;">
+                  {% if key == 'quick' %}Top 100 fast ports + version detection{% endif %}
+                  {% if key == 'full' %}Top 1000 standard ports + OS guessing{% endif %}
+                  {% if key == 'intense' %}Aggressive timing + scripts + OS probe{% endif %}
+                  {% if key == 'custom' %}Manual flag entry (safe allowlist mode){% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Hidden Input for Form Submission -->
+          <input type="hidden" id="scanType" value="quick">
+        </div>
+
+        <!-- Custom Flags (Expandable) -->
+        <div class="mb-4 d-none" id="customFlagsWrap">
+          <label class="form-label fw-bold">Custom Flags (Safe Sandbox)</label>
+          <input type="text" class="form-control cs-input font-mono" id="customFlags" placeholder="-F -T4 -sV">
+          <div class="form-text text-muted small mt-1">
+            <i class="fa-solid fa-shield-halved me-1 text-success"></i> Only non-destructive port and version scan flags permitted.
+          </div>
+        </div>
+
+        <!-- Start Scan Action -->
+        <div class="d-flex align-items-center justify-content-between pt-2">
+          <div class="text-muted small">
+            <i class="fa-solid fa-circle-info text-info me-1"></i> Scans run asynchronously in background thread.
+          </div>
+          <button type="submit" class="btn cs-btn-primary btn-lg" id="startBtn">
+            <i class="fa-solid fa-play"></i> Launch Scan
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Radar Scan HUD Card -->
+    <div class="cs-card spotlight-card p-4 p-md-5 d-none" id="progressCard">
+      <div class="text-center mb-4">
+        <!-- Animated Radar HUD -->
+        <div class="cs-radar-hud" id="radarAnimation">
+          <div class="cs-radar-beam"></div>
+          <div class="cs-radar-center-dot"></div>
+        </div>
+        <h4 class="fw-bold mb-1" id="scanTargetHeading">Scanning Target</h4>
+        <p class="text-muted small" id="scanElapsedTime">Elapsed: 0.0s</p>
+      </div>
+
+      <!-- Telemetry Checklist -->
+      <div class="cs-telemetry-list mb-4" id="telemetryList">
+        <div class="cs-telemetry-item" id="step-running">
+          <i class="fa-solid fa-circle-notch fa-spin text-primary"></i>
+          <span>1. Initializing Nmap Port &amp; Service Discovery</span>
+        </div>
+        <div class="cs-telemetry-item" id="step-parsing">
+          <i class="fa-regular fa-circle"></i>
+          <span>2. Parsing XML Service &amp; OS Heuristics</span>
+        </div>
+        <div class="cs-telemetry-item" id="step-checking_cve">
+          <i class="fa-regular fa-circle"></i>
+          <span>3. Correlating Offline CVE Vulnerabilities</span>
+        </div>
+        <div class="cs-telemetry-item" id="step-scoring">
+          <i class="fa-regular fa-circle"></i>
+          <span>4. Calculating Composite Risk Score (0–100)</span>
+        </div>
+        <div class="cs-telemetry-item" id="step-reporting">
+          <i class="fa-regular fa-circle"></i>
+          <span>5. Compiling HTML &amp; ReportLab PDF Artifacts</span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress cs-progress mb-2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar cs-progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-2 small">
+        <span id="progressLabel" class="text-muted font-mono">Initializing scanner...</span>
+        <span id="progressPercent" class="text-accent fw-bold font-mono">0%</span>
+      </div>
+
+      <!-- Error Box -->
+      <div id="progressError" class="alert alert-danger mt-3 d-none"></div>
+
+      <!-- Action Buttons on Complete -->
+      <div class="d-flex gap-3 justify-content-center mt-4">
+        <a href="#" id="viewReportBtn" class="btn cs-btn-primary btn-lg d-none">
+          <i class="fa-solid fa-file-shield"></i> View Full Audit Report
+        </a>
+        <button type="button" id="scanAgainBtn" class="btn cs-btn-outline d-none" onclick="resetScanForm()">
+          <i class="fa-solid fa-rotate-left"></i> Scan Another
+        </button>
       </div>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Scan Type</label>
-      <select class="form-select cs-input" id="scanType">
-        {% for key, profile in scan_profiles.items() %}
-        <option value="{{ key }}">{{ profile.label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="mb-3 d-none" id="customFlagsWrap">
-      <label class="form-label">Custom Flags</label>
-      <input type="text" class="form-control cs-input" id="customFlags" placeholder="-F -T4 -sV">
-      <div class="form-text">Only a safe allowlist of flags is permitted in demo mode.</div>
-    </div>
-
-    <button type="submit" class="btn cs-btn-primary" id="startBtn">
-      <i class="fa-solid fa-play"></i> Start Scan
-    </button>
-  </form>
-</div>
-
-<div class="cs-card p-4 d-none" id="progressCard">
-  <h5 class="mb-3"><i class="fa-solid fa-satellite-dish"></i> Progress</h5>
-  <div class="progress cs-progress mb-2" role="progressbar">
-    <div class="progress-bar cs-progress-bar" id="progressBar" style="width: 0%"></div>
   </div>
-  <div id="progressLabel" class="cs-progress-label">Queued</div>
-  <div id="progressError" class="text-danger mt-2 d-none"></div>
-  <a href="#" id="viewReportBtn" class="btn cs-btn-primary mt-3 d-none">
-    <i class="fa-solid fa-file-lines"></i> View Report
-  </a>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const scanType = document.getElementById("scanType");
-  const customWrap = document.getElementById("customFlagsWrap");
-  scanType.addEventListener("change", () => {
-    customWrap.classList.toggle("d-none", scanType.value !== "custom");
-  });
+function selectTarget(target) {
+  document.getElementById("targetSelect").value = target;
+}
 
+function selectProfile(profileKey) {
+  document.getElementById("scanType").value = profileKey;
+  document.querySelectorAll(".cs-profile-card").forEach(el => {
+    el.classList.toggle("selected", el.getAttribute("data-profile") === profileKey);
+  });
+  document.getElementById("customFlagsWrap").classList.toggle("d-none", profileKey !== "custom");
+}
+
+let timerInterval = null;
+let startTime = null;
+
+function resetScanForm() {
+  document.getElementById("progressCard").classList.add("d-none");
+  document.getElementById("scanSetupCard").classList.remove("d-none");
+  document.getElementById("startBtn").disabled = false;
+  if (timerInterval) clearInterval(timerInterval);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("scanForm");
+  const scanSetupCard = document.getElementById("scanSetupCard");
   const progressCard = document.getElementById("progressCard");
   const progressBar = document.getElementById("progressBar");
+  const progressPercent = document.getElementById("progressPercent");
   const progressLabel = document.getElementById("progressLabel");
   const progressError = document.getElementById("progressError");
   const viewReportBtn = document.getElementById("viewReportBtn");
+  const scanAgainBtn = document.getElementById("scanAgainBtn");
   const startBtn = document.getElementById("startBtn");
+  const scanTargetHeading = document.getElementById("scanTargetHeading");
+  const scanElapsedTime = document.getElementById("scanElapsedTime");
+  const radar = document.getElementById("radarAnimation");
+
+  const steps = ["running", "parsing", "checking_cve", "scoring", "reporting"];
+
+  function updateTelemetry(currentStage) {
+    const stageIdx = steps.indexOf(currentStage);
+    steps.forEach((step, idx) => {
+      const el = document.getElementById(`step-${step}`);
+      if (!el) return;
+      if (idx < stageIdx || currentStage === "finished") {
+        el.className = "cs-telemetry-item completed";
+        el.querySelector("i").className = "fa-solid fa-circle-check text-success";
+      } else if (idx === stageIdx) {
+        el.className = "cs-telemetry-item active";
+        el.querySelector("i").className = "fa-solid fa-circle-notch fa-spin text-primary";
+      } else {
+        el.className = "cs-telemetry-item";
+        el.querySelector("i").className = "fa-regular fa-circle text-muted";
+      }
+    });
+  }
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
+    const targetVal = document.getElementById("targetSelect").value.trim();
+    if (!targetVal) return;
+
+    scanSetupCard.classList.add("d-none");
     progressCard.classList.remove("d-none");
     progressError.classList.add("d-none");
     viewReportBtn.classList.add("d-none");
+    scanAgainBtn.classList.add("d-none");
+    
     progressBar.style.width = "5%";
-    progressLabel.textContent = "Queued";
+    progressPercent.textContent = "5%";
+    progressLabel.textContent = "Initializing scanner daemon...";
+    scanTargetHeading.textContent = `Scanning ${targetVal}`;
     startBtn.disabled = true;
 
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      scanElapsedTime.textContent = `Elapsed: ${elapsed}s`;
+    }, 100);
+
     const body = {
-      target: document.getElementById("targetSelect").value,
-      scan_type: scanType.value,
+      target: targetVal,
+      scan_type: document.getElementById("scanType").value,
       custom_flags: document.getElementById("customFlags") ? document.getElementById("customFlags").value : "",
     };
 
@@ -100,31 +263,50 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       pollStatus(data.scan_id);
     } catch (err) {
+      clearInterval(timerInterval);
       progressError.textContent = err.message;
       progressError.classList.remove("d-none");
+      scanAgainBtn.classList.remove("d-none");
       startBtn.disabled = false;
     }
   });
 
   function pollStatus(scanId) {
     const interval = setInterval(async () => {
-      const res = await fetch(`/api/scan/${scanId}/status`);
-      const data = await res.json();
-      progressBar.style.width = (data.percent || 0) + "%";
-      progressLabel.textContent = data.label || data.stage;
+      try {
+        const res = await fetch(`/api/scan/${scanId}/status`);
+        const data = await res.json();
+        
+        const pct = data.percent || 0;
+        progressBar.style.width = pct + "%";
+        progressPercent.textContent = pct + "%";
+        progressLabel.textContent = data.label || data.stage;
 
-      if (data.stage === "error") {
-        clearInterval(interval);
-        progressError.textContent = data.label;
-        progressError.classList.remove("d-none");
-        startBtn.disabled = false;
-      } else if (data.stage === "finished") {
-        clearInterval(interval);
-        viewReportBtn.href = `/report/${scanId}`;
-        viewReportBtn.classList.remove("d-none");
-        startBtn.disabled = false;
+        updateTelemetry(data.stage);
+
+        if (data.stage === "error") {
+          clearInterval(interval);
+          clearInterval(timerInterval);
+          progressError.textContent = data.label || data.error;
+          progressError.classList.remove("d-none");
+          scanAgainBtn.classList.remove("d-none");
+          startBtn.disabled = false;
+        } else if (data.stage === "finished") {
+          clearInterval(interval);
+          clearInterval(timerInterval);
+          progressBar.style.width = "100%";
+          progressPercent.textContent = "100%";
+          progressLabel.textContent = "Scan complete. Audit report ready.";
+          
+          viewReportBtn.href = `/report/${scanId}`;
+          viewReportBtn.classList.remove("d-none");
+          scanAgainBtn.classList.remove("d-none");
+          startBtn.disabled = false;
+        }
+      } catch (e) {
+        // Network polling error - continue polling
       }
-    }, 1200);
+    }, 1000);
   }
 });
 </script>

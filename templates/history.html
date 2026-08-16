@@ -1,50 +1,102 @@
 {% extends "base.html" %}
-{% block title %}History — CyberSentinel{% endblock %}
+{% block title %}Scan History — CyberSentinel{% endblock %}
 
 {% block content %}
-<h2 class="cs-section-title mb-4"><i class="fa-solid fa-clock-rotate-left"></i> Scan History</h2>
-
-<form class="mb-4" method="get">
-  <div class="input-group">
-    <input type="text" class="form-control cs-input" name="q" value="{{ q }}" placeholder="Search by target...">
-    <button class="btn cs-btn-outline" type="submit"><i class="fa-solid fa-search"></i></button>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4" data-animate="fade-up">
+  <div>
+    <h2 class="cs-section-title mb-1"><i class="fa-solid fa-clock-rotate-left"></i> Audit Archive &amp; History</h2>
+    <p class="text-muted small mb-0">Search, review, and export all historical vulnerability scans and risk scores.</p>
   </div>
-</form>
-
-{% if scans %}
-<div class="table-responsive">
-  <table class="table cs-table align-middle">
-    <thead>
-      <tr>
-        <th>#</th><th>Target</th><th>Type</th><th>Date</th><th>Duration</th><th>Status</th><th>Risk</th><th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for s in scans %}
-      <tr>
-        <td>{{ s.id }}</td>
-        <td>{{ s.target }}</td>
-        <td>{{ s.scan_type }}</td>
-        <td>{{ s.started_at[:19].replace('T', ' ') }}</td>
-        <td>{{ '%.1f'|format(s.duration_seconds) + 's' if s.duration_seconds else '—' }}</td>
-        <td><span class="badge cs-badge-{{ s.status }}">{{ s.status }}</span></td>
-        <td>
-          {% if s.risk_level %}
-            <span class="badge cs-risk-{{ s.risk_level|lower }}">{{ s.risk_level }}</span>
-          {% else %}—{% endif %}
-        </td>
-        <td>
-          <a href="{{ url_for('report_view', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline">View</a>
-          {% if s.status == 'finished' %}
-          <a href="{{ url_for('report_pdf', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline"><i class="fa-solid fa-file-pdf"></i></a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <a href="{{ url_for('scan_page') }}" class="btn cs-btn-primary btn-sm">
+    <i class="fa-solid fa-plus"></i> New Scan
+  </a>
 </div>
-{% else %}
-<p class="text-muted">No scans found.</p>
-{% endif %}
+
+<!-- Search Bar -->
+<div class="cs-card spotlight-card p-3 mb-4" data-animate="fade-up">
+  <form method="get" class="d-flex gap-2">
+    <div class="input-group">
+      <span class="input-group-text cs-input border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <input type="text" class="form-control cs-input border-start-0" name="q" value="{{ q }}" placeholder="Search by target host or IP...">
+    </div>
+    <button class="btn cs-btn-primary" type="submit">Filter</button>
+    {% if q %}
+    <a href="{{ url_for('history') }}" class="btn cs-btn-outline" title="Clear search">
+      <i class="fa-solid fa-xmark"></i>
+    </a>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Scans Table -->
+<div class="cs-card spotlight-card p-2" data-animate="fade-up">
+  {% if scans %}
+  <div class="table-responsive border-0">
+    <table class="table cs-table align-middle">
+      <thead>
+        <tr>
+          <th>#ID</th>
+          <th>Target Host</th>
+          <th>Profile</th>
+          <th>Date &amp; Time</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>Risk Score</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in scans %}
+        <tr>
+          <td class="font-mono text-muted small">#{{ s.id }}</td>
+          <td class="font-mono fw-bold text-light">{{ s.target }}</td>
+          <td><span class="badge bg-secondary-subtle text-light border border-secondary">{{ s.scan_type }}</span></td>
+          <td class="text-muted small">{{ s.started_at[:19].replace('T', ' ') }}</td>
+          <td class="font-mono text-muted small">
+            {% if s.duration_seconds %}
+              <i class="fa-regular fa-clock me-1"></i>{{ '%.1f'|format(s.duration_seconds) }}s
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td><span class="badge cs-badge-{{ s.status }}">{{ s.status }}</span></td>
+          <td>
+            {% if s.risk_level %}
+              <span class="badge cs-risk-{{ s.risk_level|lower }}">
+                {{ s.risk_level }} ({{ s.risk_score }})
+              </span>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            <div class="d-inline-flex gap-1">
+              <a href="{{ url_for('report_view', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline" title="View Audit Details">
+                <i class="fa-solid fa-eye me-1"></i> View
+              </a>
+              {% if s.status == 'finished' %}
+              <a href="{{ url_for('report_pdf', scan_id=s.id) }}" class="btn btn-sm cs-btn-outline text-danger" title="Download PDF Report">
+                <i class="fa-solid fa-file-pdf"></i>
+              </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="p-5 text-center">
+    <div class="text-muted mb-3"><i class="fa-solid fa-folder-open fa-2x"></i></div>
+    <h5 class="fw-bold mb-1">No Historical Audits Found</h5>
+    <p class="text-muted small mb-3">
+      {% if q %}No scans match your query "{{ q }}".{% else %}You have not executed any vulnerability scans yet.{% endif %}
+    </p>
+    <a href="{{ url_for('scan_page') }}" class="btn cs-btn-primary btn-sm">
+      <i class="fa-solid fa-play me-1"></i> Launch First Scan
+    </a>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

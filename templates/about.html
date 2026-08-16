@@ -2,75 +2,128 @@
 {% block title %}About — CyberSentinel{% endblock %}
 
 {% block content %}
-<h2 class="cs-section-title mb-4"><i class="fa-solid fa-circle-info"></i> How It Works</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-10">
 
-<div class="cs-card p-4 mb-4">
-  <h5 class="cs-card-title">Scan Workflow</h5>
-  <ol class="cs-list">
-    <li>You choose an <strong>approved demonstration target</strong> and a scan profile.</li>
-    <li>The target is checked against a hard-coded allowlist &mdash; anything else is rejected.</li>
-    <li>Nmap runs host discovery and service/version detection.</li>
-    <li>Results are parsed into structured data (open ports, services, versions, OS guess).</li>
-    <li>Each detected service is checked against a small offline CVE lookup table.</li>
-    <li>A 0&ndash;100 risk score is calculated from the severities found.</li>
-    <li>Everything is saved to the database and rendered as an HTML + downloadable PDF report.</li>
-  </ol>
-</div>
-
-<div class="cs-card p-4 mb-4">
-  <h5 class="cs-card-title">Responsible Use</h5>
-  <p class="mb-2">
-    CyberSentinel is a <strong>portfolio / educational project</strong>. It does not exploit
-    anything &mdash; it only performs read-only discovery and reporting, and only against
-    hosts that have explicitly opted in to being scanned for demonstration purposes
-    (such as <code>scanme.nmap.org</code>, which Nmap's own maintainers provide for exactly
-    this kind of testing).
-  </p>
-  <p class="mb-0">
-    Scanning systems you don't own or have explicit written authorization to test is illegal
-    in most jurisdictions. If you deploy this project, keep the allowlist in <code>config.py</code>
-    restricted to targets you are authorized to scan.
-  </p>
-</div>
-
-<div class="cs-card p-4 mb-4">
-  <h5 class="cs-card-title">Tech Stack</h5>
-  <div class="row">
-    <div class="col-md-6">
-      <strong>Backend</strong>
-      <ul class="cs-list">
-        <li>Python 3.12 + Flask</li>
-        <li>python-nmap</li>
-        <li>SQLite</li>
-        <li>Jinja2</li>
-        <li>ReportLab (PDF generation)</li>
-      </ul>
+    <!-- Header -->
+    <div class="mb-4" data-animate="fade-up">
+      <h2 class="cs-section-title mb-1"><i class="fa-solid fa-circle-info"></i> Architecture &amp; Methodology</h2>
+      <p class="text-muted small mb-0">Overview of CyberSentinel's scanning pipeline, safety controls, and technological foundations.</p>
     </div>
-    <div class="col-md-6">
-      <strong>Frontend</strong>
-      <ul class="cs-list">
-        <li>Bootstrap 5</li>
-        <li>Chart.js</li>
-        <li>Vanilla JavaScript (ES6)</li>
-      </ul>
+
+    <!-- Workflow Section -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
+      <h5 class="cs-card-title mb-4">
+        <i class="fa-solid fa-diagram-project"></i> End-to-End Audit Pipeline
+      </h5>
+      
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge cs-badge-running">Phase 1</span>
+              <strong class="text-light">Target Allowlist Check</strong>
+            </div>
+            <p class="text-muted small mb-0">
+              Validates destination against hardcoded portfolio demonstration targets (e.g. <code>scanme.nmap.org</code>, localhost) or private RFC-1918 subnets.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge cs-badge-running">Phase 2</span>
+              <strong class="text-light">Nmap Discovery Engine</strong>
+            </div>
+            <p class="text-muted small mb-0">
+              Executes asynchronous background Nmap scans for TCP port discovery, service version banner grabbing, and OS fingerprinting.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge cs-badge-running">Phase 3</span>
+              <strong class="text-light">Offline CVE Correlation</strong>
+            </div>
+            <p class="text-muted small mb-0">
+              Parses service banners against a curated offline vulnerability dataset, matching affected software versions without external runtime network dependencies.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge cs-badge-running">Phase 4</span>
+              <strong class="text-light">Risk Scoring &amp; PDF Build</strong>
+            </div>
+            <p class="text-muted small mb-0">
+              Computes a 0–100 composite risk score and dynamically compiles technical HTML dashboards alongside downloadable ReportLab PDF reports.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Responsible Use & Ethics -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
+      <h5 class="cs-card-title mb-3">
+        <i class="fa-solid fa-shield-halved"></i> Responsible Security Research &amp; Ethics
+      </h5>
+      <p class="text-secondary small mb-3">
+        CyberSentinel is strictly an <strong>educational portfolio project</strong>. It performs non-intrusive, read-only discovery and signature correlation. It contains no exploitation modules or brute-force tooling.
+      </p>
+      <div class="p-3 rounded bg-danger-subtle border border-danger border-opacity-25 text-danger small">
+        <i class="fa-solid fa-triangle-exclamation me-1"></i>
+        <strong>Legal Boundary:</strong> Scanning networks or computer systems without explicit, prior written authorization from the system owner is illegal under cybercrime legislation worldwide.
+      </div>
+    </div>
+
+    <!-- Tech Stack Grid -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
+      <h5 class="cs-card-title mb-4">
+        <i class="fa-solid fa-layer-group"></i> Architecture &amp; Technology Stack
+      </h5>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h6 class="text-light fw-bold mb-3"><i class="fa-solid fa-server me-1 text-primary"></i> Backend &amp; Core</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-dark-subtle text-light border border-secondary">Python 3.12</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Flask Framework</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">python-nmap</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">SQLite3</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">ReportLab (PDF Engine)</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Nginx &amp; Docker</span>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h6 class="text-light fw-bold mb-3"><i class="fa-solid fa-desktop me-1 text-info"></i> Frontend &amp; Motion</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-dark-subtle text-light border border-secondary">Lenis Smooth Scroll</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Animate UI Motion</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Bootstrap 5.3</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Chart.js</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">FontAwesome 6</span>
+            <span class="badge bg-dark-subtle text-light border border-secondary">Glassmorphism</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Author & Disclaimer -->
+    <div class="cs-card spotlight-card p-4 p-md-5" data-animate="fade-up">
+      <h5 class="cs-card-title mb-3">
+        <i class="fa-solid fa-user-shield"></i> Author &amp; Portfolio Disclaimer
+      </h5>
+      <p class="text-muted small mb-0">
+        Engineered by <strong>Md Mizan</strong> to demonstrate full-stack Python development, asynchronous architecture, and automated vulnerability assessment pipelines. Distributed under the MIT License.
+      </p>
+    </div>
+
   </div>
-</div>
-
-<div class="cs-card p-4 mb-4">
-  <h5 class="cs-card-title">Author & Disclaimer</h5>
-  <p class="mb-2">
-    Developed by Md Mizan as a personal portfolio project to demonstrate 
-    full-stack development and security-automation skills. This tool is provided 
-    for educational and authorized demonstration purposes only. It is designed 
-    to scan solely pre-approved demonstration targets and private/local network 
-    addresses under the user's own control. The author does not condone, and 
-    accepts no responsibility or liability for, any unauthorized, unlawful, or 
-    malicious use of this software by any third party. Scanning systems, 
-    networks, or devices without explicit authorization from their owner is 
-    illegal in most jurisdictions, and any individual who uses this tool to do 
-    so does so entirely at their own risk and is solely responsible for their 
-    actions.
-  </p>
 </div>
 {% endblock %}

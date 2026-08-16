@@ -3,45 +3,124 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}CyberSentinel{% endblock %}</title>
+  <title>{% block title %}CyberSentinel — Vulnerability Scanner{% endblock %}</title>
+  
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3.3 CSS & FontAwesome 6.5.2 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <!-- Minimalist SaaS Stylesheet -->
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg cs-navbar sticky-top">
-    <div class="container">
+  <!-- Ambient Parallax Orbs Background -->
+  <div class="cs-parallax-canvas">
+    <div class="cs-orb cs-orb-1"></div>
+    <div class="cs-orb cs-orb-2"></div>
+    <div class="cs-orb cs-orb-3"></div>
+  </div>
+
+  <!-- Floating Minimal Navbar -->
+  <div class="container cs-navbar-container">
+    <nav class="navbar navbar-expand-lg cs-navbar">
       <a class="navbar-brand cs-brand" href="{{ url_for('home') }}">
-        <i class="fa-solid fa-shield-halved"></i> CyberSentinel
+        <span class="cs-brand-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </span>
+        <span>CyberSentinel</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-        <span class="navbar-toggler-icon"></span>
+
+      <button class="navbar-toggler cs-hamburger-btn collapsed border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="cs-hamburger-box">
+          <span class="cs-hamburger-line line-1"></span>
+          <span class="cs-hamburger-line line-2"></span>
+          <span class="cs-hamburger-line line-3"></span>
+        </span>
       </button>
+
       <div class="collapse navbar-collapse" id="navMain">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('discover_page') }}">Discover</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('scan_page') }}">Scan</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('history') }}">History</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">
+              <i class="fa-solid fa-house-chimney me-1 small opacity-75"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'discover_page' %}active{% endif %}" href="{{ url_for('discover_page') }}">
+              <i class="fa-solid fa-network-wired me-1 small opacity-75"></i> Discover
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'scan_page' %}active{% endif %}" href="{{ url_for('scan_page') }}">
+              <i class="fa-solid fa-magnifying-glass-chart me-1 small opacity-75"></i> Scan Target
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'history' %}active{% endif %}" href="{{ url_for('history') }}">
+              <i class="fa-solid fa-clock-rotate-left me-1 small opacity-75"></i> History
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" href="{{ url_for('about') }}">
+              <i class="fa-solid fa-circle-info me-1 small opacity-75"></i> About
+            </a>
+          </li>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a href="{{ url_for('scan_page') }}" class="btn btn-sm cs-btn-primary">
+              <i class="fa-solid fa-bolt"></i> Launch Scan
+            </a>
+          </li>
         </ul>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
 
+  <!-- Main Application Container -->
   <main class="container py-4">
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="cs-footer text-center py-4 mt-5">
+  <!-- Modern Clean Footer -->
+  <footer class="cs-footer">
     <div class="container">
-      <small>CyberSentinel &mdash; Built by Md Mizan for authorized demo use only. Scans are restricted to explicitly authorized targets only.</small>
+      <div class="row align-items-center g-3">
+        <div class="col-md-6 text-center text-md-start">
+          <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
+            <span class="cs-pulse-dot"></span>
+            <span class="text-light fw-medium small">CyberSentinel Security Suite</span>
+          </div>
+          <small class="text-muted">
+            Engineered by <strong class="text-light">Md Mizan</strong> for authorized demonstration and research.
+          </small>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <div class="d-flex align-items-center justify-content-center justify-content-md-end gap-3 small">
+            <a href="{{ url_for('about') }}">Methodology</a>
+            <span class="text-muted">&bull;</span>
+            <a href="https://github.com/mizan989/CyberSentinel" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-github me-1"></i> GitHub Repository
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+  <!-- Lenis Smooth Scrolling CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+  <!-- Main Script -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>

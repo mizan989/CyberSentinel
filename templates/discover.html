@@ -2,41 +2,87 @@
 {% block title %}Discover Network — CyberSentinel{% endblock %}
 
 {% block content %}
-<h2 class="cs-section-title mb-2"><i class="fa-solid fa-network-wired"></i> Discover Network</h2>
-<p class="text-muted mb-4">
-  Finds live devices on your local network so you can pick one to scan.
-  Only ever scans private/LAN address ranges &mdash; never the public internet.
-</p>
-
-<div class="cs-card p-4 mb-4">
-  <div class="row g-2 align-items-end">
-    <div class="col-md-6">
-      <label class="form-label">Subnet (optional)</label>
-      <input type="text" class="form-control cs-input" id="subnetInput" placeholder="auto-detect (e.g. 192.168.1.0/24)">
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4" data-animate="fade-up">
+      <div>
+        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-network-wired"></i> Local Network Discovery</h2>
+        <p class="text-muted small mb-0">
+          Actively scans the local broadcast domain to identify live connected devices for authorized vulnerability auditing.
+        </p>
+      </div>
+      <span class="badge bg-dark-subtle text-info border border-secondary">
+        <i class="fa-solid fa-lock me-1"></i> Private Subnets Only
+      </span>
     </div>
-    <div class="col-md-6">
-      <button class="btn cs-btn-primary" id="discoverBtn">
-        <i class="fa-solid fa-satellite-dish"></i> Scan Network
-      </button>
-    </div>
-  </div>
-  <div id="discoverStatus" class="cs-progress-label mt-3"></div>
-</div>
 
-<div id="resultsCard" class="cs-card p-4 d-none">
-  <h5 class="cs-card-title mb-1">Devices found on <span id="subnetLabel"></span></h5>
-  <div class="table-responsive mt-3">
-    <table class="table cs-table align-middle">
-      <thead>
-        <tr><th>IP Address</th><th>Hostname</th><th>MAC Address</th><th>Vendor</th><th></th></tr>
-      </thead>
-      <tbody id="devicesBody"></tbody>
-    </table>
+    <!-- Discovery Controls Card -->
+    <div class="cs-card spotlight-card p-4 mb-4" data-animate="fade-up">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-7">
+          <label class="form-label fw-bold">Target Subnet (Optional)</label>
+          <div class="input-group">
+            <span class="input-group-text cs-input border-end-0 text-muted"><i class="fa-solid fa-diagram-project"></i></span>
+            <input type="text" class="form-control cs-input border-start-0 font-mono" id="subnetInput" placeholder="auto-detect (e.g. 192.168.1.0/24)">
+          </div>
+          <div class="form-text text-muted small mt-1">
+            Leave blank to automatically detect your active local network interface.
+          </div>
+        </div>
+        <div class="col-md-5 text-md-end">
+          <button class="btn cs-btn-cyan btn-lg w-100 w-md-auto" id="discoverBtn">
+            <i class="fa-solid fa-satellite-dish"></i> Scan Local Network
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Discovery Progress -->
+      <div id="discoverStatusWrap" class="d-none mt-4 pt-3 border-top border-secondary border-opacity-25">
+        <div class="d-flex align-items-center gap-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <span id="discoverStatus" class="font-mono text-muted small">Probing network ARP / ICMP hosts...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discovery Results Card -->
+    <div id="resultsCard" class="cs-card spotlight-card p-4 d-none" data-animate="fade-up">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="cs-card-title mb-0">
+          <i class="fa-solid fa-laptop-code"></i> Live Hosts Found on <span id="subnetLabel" class="font-mono text-accent"></span>
+        </h5>
+        <span id="deviceCountBadge" class="badge cs-badge-finished">0 Devices</span>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table cs-table align-middle">
+          <thead>
+            <tr>
+              <th>IP Address</th>
+              <th>Hostname</th>
+              <th>MAC Address</th>
+              <th>Vendor Hardware</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody id="devicesBody"></tbody>
+        </table>
+      </div>
+
+      <div class="p-3 mt-3 rounded bg-dark-subtle border border-secondary border-opacity-25">
+        <div class="d-flex align-items-start gap-2">
+          <i class="fa-solid fa-circle-info text-info mt-1"></i>
+          <small class="text-muted">
+            MAC address and hardware vendor resolution require root/administrator privileges on the host system.
+            IP addresses and hostnames are fully queryable under standard user permissions.
+          </small>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <p class="text-muted small mb-0">
-    MAC/vendor info may show "unknown" unless the app is run with elevated
-    (root/admin) privileges &mdash; IP and hostname still work either way.
-  </p>
 </div>
 {% endblock %}
 
@@ -44,14 +90,17 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const btn = document.getElementById("discoverBtn");
+  const statusWrap = document.getElementById("discoverStatusWrap");
   const status = document.getElementById("discoverStatus");
   const resultsCard = document.getElementById("resultsCard");
   const subnetLabel = document.getElementById("subnetLabel");
   const devicesBody = document.getElementById("devicesBody");
+  const deviceCountBadge = document.getElementById("deviceCountBadge");
 
   btn.addEventListener("click", async function () {
     btn.disabled = true;
-    status.textContent = "Scanning network... this can take a few seconds.";
+    statusWrap.classList.remove("d-none");
+    status.textContent = "Scanning local subnet for active nodes (takes ~3-8s)...";
     resultsCard.classList.add("d-none");
 
     const subnet = document.getElementById("subnetInput").value.trim();
@@ -69,22 +118,31 @@ document.addEventListener("DOMContentLoaded", function () {
       devicesBody.innerHTML = "";
 
       if (data.devices.length === 0) {
-        status.textContent = "No devices found. Try specifying a subnet manually.";
+        status.textContent = "No responsive devices detected. Try specifying a subnet CIDR manually.";
       } else {
-        status.textContent = `Found ${data.devices.length} device(s).`;
+        statusWrap.classList.add("d-none");
+        deviceCountBadge.textContent = `${data.devices.length} Devices`;
+
         data.devices.forEach((d) => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${d.ip}${d.is_this_device ? ' <span class="badge cs-badge-finished">this device</span>' : ""}</td>
-            <td>${d.hostname || "—"}</td>
-            <td>${d.mac}</td>
-            <td>${d.vendor}</td>
-            <td><a class="btn btn-sm cs-btn-outline" href="/scan?target=${encodeURIComponent(d.ip)}">
-                  <i class="fa-solid fa-magnifying-glass-chart"></i> Scan</a></td>
+            <td class="font-mono fw-bold text-light">
+              ${d.ip}
+              ${d.is_this_device ? '<span class="badge cs-badge-finished ms-1">this device</span>' : ''}
+            </td>
+            <td class="text-secondary small font-mono">${d.hostname || "—"}</td>
+            <td class="text-muted small font-mono">${d.mac || "—"}</td>
+            <td class="text-muted small">${d.vendor || "Unknown"}</td>
+            <td class="text-end">
+              <a class="btn btn-sm cs-btn-primary" href="/scan?target=${encodeURIComponent(d.ip)}">
+                <i class="fa-solid fa-magnifying-glass-chart me-1"></i> Scan Target
+              </a>
+            </td>
           `;
           devicesBody.appendChild(tr);
         });
         resultsCard.classList.remove("d-none");
+        resultsCard.classList.add("animated");
       }
     } catch (err) {
       status.textContent = err.message;
