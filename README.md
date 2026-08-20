@@ -105,7 +105,3 @@ dictionary of service → known CVE rules with simple substring version
 matching. It's intentionally offline/static for a demo. To make this more
 rigorous, you'd swap in proper CPE-based matching against the NVD API — just
 be mindful that adds an external network dependency at scan/report time.
-
-## License
-
-MIT — see `LICENSE`.
