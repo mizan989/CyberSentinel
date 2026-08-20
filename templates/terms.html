@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Terms &amp; Conditions — CyberSentinel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+
+    <!-- Header -->
+    <div class="mb-4" data-animate="fade-up">
+      <div class="wm-tag mb-3" style="background: var(--cs-cream); color: var(--cs-cream-dark);">
+        <span class="wm-tag-pulse" style="color: var(--cs-coral-dark);"></span>
+        <span>Ethical Guidelines &amp; Legal Terms</span>
+      </div>
+      <h2 class="cs-section-title mb-1"><i class="fa-solid fa-scale-balanced text-secondary"></i> Terms &amp; Conditions</h2>
+      <p class="text-muted small mb-0">Rules, authorized scope, and liability boundaries for using CyberSentinel.</p>
+    </div>
+
+    <!-- Critical Legal Alert Box -->
+    <div class="cs-card spotlight-card p-4 mb-4" data-animate="fade-up" style="border-left: 6px solid var(--cs-coral);">
+      <div class="d-flex align-items-start gap-3">
+        <div class="cs-stat-icon-badge cs-stat-icon-coral flex-shrink-0">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div>
+          <h5 class="fw-bold text-dark mb-1">Strict Authorization Requirement</h5>
+          <p class="text-secondary small mb-0">
+            CyberSentinel is designed strictly for authorized security research, vulnerability auditing, and educational demonstrations on networks and hosts you own or have explicit written permission to assess.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms Sections -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
+      <h5 class="cs-card-title mb-4">
+        <i class="fa-solid fa-gavel text-primary"></i> User Agreement &amp; Operating Principles
+      </h5>
+
+      <div class="d-flex flex-column gap-4">
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-check-double text-success me-2"></i> 1. Non-Intrusive &amp; Read-Only Auditing</h6>
+          <p class="text-secondary small mb-0">
+            CyberSentinel operates exclusively in a read-only capacity. It performs standard TCP SYN/connect scanning, banner discovery, and deterministic CVE signature matching. It does not perform exploit delivery, denial of service (DoS), brute force, or payload injection.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-shield-halved text-primary me-2"></i> 2. Demonstration Allowlist &amp; Sandbox Protection</h6>
+          <p class="text-secondary small mb-0">
+            The platform includes built-in safeguards restricting scans to authorized demonstration hosts (e.g. <code>scanme.nmap.org</code>, localhost) and private RFC-1918 subnets. Attempting to bypass these protections for malicious purposes violates this agreement.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-file-contract text-warning me-2"></i> 3. Disclaimer of Warranties</h6>
+          <p class="text-secondary small mb-0">
+            CyberSentinel is provided "as is" without warranties of any kind, whether express or implied. The author and contributors make no guarantee regarding the completeness, accuracy, or suitability of the vulnerability matches or risk scores for production compliance audits.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-user-shield text-info me-2"></i> 4. Limitation of Liability</h6>
+          <p class="text-secondary small mb-0">
+            Under no circumstances shall the author (Md Mizan) or project contributors be liable for any direct, indirect, incidental, or consequential damages arising from the use, misuse, or inability to use this software.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-code text-secondary me-2"></i> 5. Open Source Licensing</h6>
+          <p class="text-secondary small mb-0">
+            CyberSentinel is licensed under the terms of the MIT License. You are free to inspect, fork, and adapt the software in accordance with open-source guidelines.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to Dashboard Card -->
+    <div class="cs-card spotlight-card p-4 text-center" data-animate="fade-up">
+      <h6 class="fw-bold text-dark mb-1">Ready to explore?</h6>
+      <p class="text-muted small mb-3">Proceed to the dashboard or launch an authorized scan on a demonstration endpoint.</p>
+      <div class="d-flex justify-content-center gap-2">
+        <a href="{{ url_for('home') }}" class="btn cs-btn-outline btn-sm">
+          <i class="fa-solid fa-house me-1"></i> Dashboard
+        </a>
+        <a href="{{ url_for('scan_page') }}" class="btn cs-btn-primary btn-sm">
+          <i class="fa-solid fa-bolt me-1"></i> Launch Scan
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

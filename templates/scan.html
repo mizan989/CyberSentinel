@@ -8,11 +8,11 @@
     <!-- Header -->
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4" data-animate="fade-up">
       <div>
-        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-magnifying-glass-chart"></i> Vulnerability Scanner</h2>
+        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-magnifying-glass-chart text-secondary"></i> Vulnerability Scanner</h2>
         <p class="text-muted small mb-0">Run deterministic port scanning, service identification, and offline CVE correlation.</p>
       </div>
       <a href="{{ url_for('discover_page') }}" class="btn btn-sm cs-btn-outline">
-        <i class="fa-solid fa-network-wired"></i> Discover LAN Devices
+        <i class="fa-solid fa-network-wired text-muted me-1"></i> Discover LAN Devices
       </a>
     </div>
 
@@ -22,15 +22,18 @@
         
         <!-- Target Selection -->
         <div class="mb-4">
-          <label class="form-label fw-bold d-flex justify-content-between align-items-center">
+          <label class="form-label fw-bold d-flex justify-content-between align-items-center text-dark">
             <span>Target Host / IP</span>
-            <span class="badge bg-dark-subtle text-muted border border-secondary small">Demo Allowlist Active</span>
+            <span class="badge bg-light text-dark border small">Demo Allowlist Active</span>
           </label>
           <div class="input-group mb-2">
             <span class="input-group-text cs-input border-end-0 text-muted"><i class="fa-solid fa-crosshairs"></i></span>
-            <input type="text" class="form-control cs-input border-start-0 font-mono" id="targetSelect"
+            <input type="text" class="form-control cs-input border-start-0 border-end-0 font-mono" id="targetSelect"
                    list="targetOptions" value="{{ prefill_target }}"
                    placeholder="e.g. scanme.nmap.org or 127.0.0.1" required>
+            <span class="input-group-text cs-input border-start-0 text-muted d-none d-sm-flex">
+              <span class="wm-kbd">Ctrl+K</span>
+            </span>
           </div>
           <datalist id="targetOptions">
             {% for t in allowed_targets %}
@@ -43,7 +46,7 @@
             <span class="small text-muted me-1">Quick Select:</span>
             {% for t in allowed_targets %}
             <span class="cs-pill-target" onclick="selectTarget('{{ t }}')">
-              <i class="fa-solid fa-server me-1 small"></i>{{ t }}
+              <i class="fa-solid fa-server me-1 small opacity-75"></i>{{ t }}
             </span>
             {% endfor %}
           </div>
@@ -51,25 +54,25 @@
 
         <!-- Scan Profile Selection -->
         <div class="mb-4">
-          <label class="form-label fw-bold mb-3">Scan Profile</label>
+          <label class="form-label fw-bold text-dark mb-3">Scan Profile</label>
           <div class="row g-3" id="profileContainer">
             {% for key, profile in scan_profiles.items() %}
             <div class="col-sm-6 col-md-3">
               <div class="cs-profile-card {% if loop.first %}selected{% endif %}" data-profile="{{ key }}" onclick="selectProfile('{{ key }}')">
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                  <div class="fw-bold text-light">
+                  <div class="fw-bold text-dark">
                     {% if key == 'quick' %}<i class="fa-solid fa-bolt text-warning me-1"></i>{% endif %}
-                    {% if key == 'full' %}<i class="fa-solid fa-layer-group text-info me-1"></i>{% endif %}
+                    {% if key == 'full' %}<i class="fa-solid fa-layer-group text-primary me-1"></i>{% endif %}
                     {% if key == 'intense' %}<i class="fa-solid fa-fire text-danger me-1"></i>{% endif %}
                     {% if key == 'custom' %}<i class="fa-solid fa-sliders text-success me-1"></i>{% endif %}
                     {{ profile.label }}
                   </div>
                 </div>
-                <div class="text-muted small" style="font-size: 0.8rem;">
+                <div class="text-muted small" style="font-size: 0.82rem; line-height: 1.4;">
                   {% if key == 'quick' %}Top 100 fast ports + version detection{% endif %}
                   {% if key == 'full' %}Top 1000 standard ports + OS guessing{% endif %}
                   {% if key == 'intense' %}Aggressive timing + scripts + OS probe{% endif %}
-                  {% if key == 'custom' %}Manual flag entry (safe allowlist mode){% endif %}
+                  {% if key == 'custom' %}Manual flag entry (safe sandbox mode){% endif %}
                 </div>
               </div>
             </div>
@@ -81,7 +84,7 @@
 
         <!-- Custom Flags (Expandable) -->
         <div class="mb-4 d-none" id="customFlagsWrap">
-          <label class="form-label fw-bold">Custom Flags (Safe Sandbox)</label>
+          <label class="form-label fw-bold text-dark">Custom Flags (Safe Sandbox)</label>
           <input type="text" class="form-control cs-input font-mono" id="customFlags" placeholder="-F -T4 -sV">
           <div class="form-text text-muted small mt-1">
             <i class="fa-solid fa-shield-halved me-1 text-success"></i> Only non-destructive port and version scan flags permitted.
@@ -91,7 +94,7 @@
         <!-- Start Scan Action -->
         <div class="d-flex align-items-center justify-content-between pt-2">
           <div class="text-muted small">
-            <i class="fa-solid fa-circle-info text-info me-1"></i> Scans run asynchronously in background thread.
+            <i class="fa-solid fa-circle-info text-primary me-1"></i> Scans run asynchronously in background thread.
           </div>
           <button type="submit" class="btn cs-btn-primary btn-lg" id="startBtn">
             <i class="fa-solid fa-play"></i> Launch Scan
@@ -100,49 +103,47 @@
       </form>
     </div>
 
-    <!-- Live Radar Scan HUD Card -->
+    <!-- Live Telemetry Scan HUD Card -->
     <div class="cs-card spotlight-card p-4 p-md-5 d-none" id="progressCard">
       <div class="text-center mb-4">
-        <!-- Animated Radar HUD -->
-        <div class="cs-radar-hud" id="radarAnimation">
-          <div class="cs-radar-beam"></div>
-          <div class="cs-radar-center-dot"></div>
+        <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: var(--cs-cream);">
+          <i class="fa-solid fa-magnifying-glass-chart fa-2x" style="color: var(--cs-blue-dark);"></i>
         </div>
-        <h4 class="fw-bold mb-1" id="scanTargetHeading">Scanning Target</h4>
-        <p class="text-muted small" id="scanElapsedTime">Elapsed: 0.0s</p>
+        <h4 class="fw-bold text-dark mb-1" id="scanTargetHeading">Scanning Target</h4>
+        <p class="text-muted small font-mono" id="scanElapsedTime">Elapsed: 0.0s</p>
       </div>
 
       <!-- Telemetry Checklist -->
       <div class="cs-telemetry-list mb-4" id="telemetryList">
-        <div class="cs-telemetry-item" id="step-running">
+        <div class="cs-telemetry-item active" id="step-running">
           <i class="fa-solid fa-circle-notch fa-spin text-primary"></i>
           <span>1. Initializing Nmap Port &amp; Service Discovery</span>
         </div>
         <div class="cs-telemetry-item" id="step-parsing">
-          <i class="fa-regular fa-circle"></i>
+          <i class="fa-regular fa-circle text-muted"></i>
           <span>2. Parsing XML Service &amp; OS Heuristics</span>
         </div>
         <div class="cs-telemetry-item" id="step-checking_cve">
-          <i class="fa-regular fa-circle"></i>
+          <i class="fa-regular fa-circle text-muted"></i>
           <span>3. Correlating Offline CVE Vulnerabilities</span>
         </div>
         <div class="cs-telemetry-item" id="step-scoring">
-          <i class="fa-regular fa-circle"></i>
+          <i class="fa-regular fa-circle text-muted"></i>
           <span>4. Calculating Composite Risk Score (0–100)</span>
         </div>
         <div class="cs-telemetry-item" id="step-reporting">
-          <i class="fa-regular fa-circle"></i>
+          <i class="fa-regular fa-circle text-muted"></i>
           <span>5. Compiling HTML &amp; ReportLab PDF Artifacts</span>
         </div>
       </div>
 
       <!-- Progress Bar -->
       <div class="progress cs-progress mb-2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar cs-progress-bar" id="progressBar" style="width: 0%"></div>
+        <div class="progress-bar cs-progress-bar wm-progress-bar" id="progressBar" style="width: 5%"></div>
       </div>
       <div class="d-flex justify-content-between align-items-center mt-2 small">
         <span id="progressLabel" class="text-muted font-mono">Initializing scanner...</span>
-        <span id="progressPercent" class="text-accent fw-bold font-mono">0%</span>
+        <span id="progressPercent" class="fw-bold font-mono text-dark">5%</span>
       </div>
 
       <!-- Error Box -->
@@ -200,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const startBtn = document.getElementById("startBtn");
   const scanTargetHeading = document.getElementById("scanTargetHeading");
   const scanElapsedTime = document.getElementById("scanElapsedTime");
-  const radar = document.getElementById("radarAnimation");
 
   const steps = ["running", "parsing", "checking_cve", "scoring", "reporting"];
 

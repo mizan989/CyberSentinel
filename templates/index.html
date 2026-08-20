@@ -2,20 +2,21 @@
 {% block title %}Dashboard — CyberSentinel{% endblock %}
 
 {% block content %}
-<!-- Hero Section with Subtle Parallax Depth -->
+<!-- Hero Section -->
 <section class="cs-hero text-center" data-animate="fade-up">
-  <div class="cs-hero-badge parallax-layer" data-speed="0.04">
-    <span class="cs-pulse-dot"></span> Automated Security Intelligence
+  <div class="wm-tag mb-4" style="background: var(--cs-cream); color: var(--cs-cream-dark);">
+    <span class="wm-tag-pulse" style="color: var(--cs-blue-dark);"></span>
+    <span>Automated Security Intelligence</span>
   </div>
   
-  <div class="d-block parallax-layer" data-speed="0.08">
+  <div class="d-block">
     <div class="cs-hero-icon-wrap">
       <i class="fa-solid fa-shield-halved cs-hero-icon"></i>
     </div>
   </div>
   
-  <h1 class="cs-title parallax-layer" data-speed="0.05">CyberSentinel</h1>
-  <p class="cs-subtitle parallax-layer" data-speed="0.03">
+  <h1 class="cs-title">CyberSentinel</h1>
+  <p class="cs-subtitle">
     Automated network discovery, non-intrusive vulnerability scanning, and executive risk analytics tailored for modern security engineering.
   </p>
   
@@ -29,13 +30,13 @@
   </div>
 </section>
 
-<!-- Live Metrics Grid -->
+<!-- Live Metrics Bento Grid -->
 <section class="row g-3 mb-5">
-  <div class="col-6 col-lg-3" data-animate="fade-up" class="delay-100">
+  <div class="col-6 col-lg-3" data-animate="fade-up">
     <div class="cs-card spotlight-card cs-stat-card">
       <div class="cs-stat-header">
         <span class="cs-stat-label">Total Audits</span>
-        <div class="cs-stat-icon-badge">
+        <div class="cs-stat-icon-badge cs-stat-icon-blue">
           <i class="fa-solid fa-clock-rotate-left"></i>
         </div>
       </div>
@@ -44,11 +45,11 @@
     </div>
   </div>
 
-  <div class="col-6 col-lg-3" data-animate="fade-up" class="delay-200">
+  <div class="col-6 col-lg-3" data-animate="fade-up">
     <div class="cs-card spotlight-card cs-stat-card">
       <div class="cs-stat-header">
         <span class="cs-stat-label">Discovered Hosts</span>
-        <div class="cs-stat-icon-badge">
+        <div class="cs-stat-icon-badge cs-stat-icon-teal">
           <i class="fa-solid fa-server"></i>
         </div>
       </div>
@@ -57,11 +58,11 @@
     </div>
   </div>
 
-  <div class="col-6 col-lg-3" data-animate="fade-up" class="delay-300">
+  <div class="col-6 col-lg-3" data-animate="fade-up">
     <div class="cs-card spotlight-card cs-stat-card">
       <div class="cs-stat-header">
         <span class="cs-stat-label">Open Ports</span>
-        <div class="cs-stat-icon-badge">
+        <div class="cs-stat-icon-badge cs-stat-icon-cream">
           <i class="fa-solid fa-bolt"></i>
         </div>
       </div>
@@ -70,11 +71,11 @@
     </div>
   </div>
 
-  <div class="col-6 col-lg-3" data-animate="fade-up" class="delay-400">
+  <div class="col-6 col-lg-3" data-animate="fade-up">
     <div class="cs-card spotlight-card cs-stat-card">
       <div class="cs-stat-header">
         <span class="cs-stat-label">Matched CVEs</span>
-        <div class="cs-stat-icon-badge">
+        <div class="cs-stat-icon-badge cs-stat-icon-coral">
           <i class="fa-solid fa-shield-virus"></i>
         </div>
       </div>
@@ -84,11 +85,11 @@
   </div>
 </section>
 
-<!-- Feature Highlights -->
+<!-- Inspira Bento Feature Highlights -->
 <section class="row g-4 mb-5" data-animate="fade-up">
   <div class="col-md-4">
     <div class="cs-card spotlight-card cs-feature-box">
-      <div class="cs-feature-icon">
+      <div class="cs-feature-icon cs-feature-icon-teal">
         <i class="fa-solid fa-radar"></i>
       </div>
       <h5 class="fw-bold mb-2">Automated Discovery</h5>
@@ -99,7 +100,7 @@
   </div>
   <div class="col-md-4">
     <div class="cs-card spotlight-card cs-feature-box">
-      <div class="cs-feature-icon">
+      <div class="cs-feature-icon cs-feature-icon-blue">
         <i class="fa-solid fa-layer-group"></i>
       </div>
       <h5 class="fw-bold mb-2">Offline CVE Engine</h5>
@@ -110,7 +111,7 @@
   </div>
   <div class="col-md-4">
     <div class="cs-card spotlight-card cs-feature-box">
-      <div class="cs-feature-icon">
+      <div class="cs-feature-icon cs-feature-icon-coral">
         <i class="fa-solid fa-file-invoice"></i>
       </div>
       <h5 class="fw-bold mb-2">Executive Reports</h5>
@@ -132,7 +133,7 @@
     </a>
   </div>
 
-  <div class="cs-card spotlight-card p-2">
+  <div class="cs-card spotlight-card p-0">
     {% if latest %}
     <div class="table-responsive border-0">
       <table class="table cs-table align-middle">
@@ -149,8 +150,8 @@
         <tbody>
           {% for s in latest %}
           <tr>
-            <td class="font-mono fw-semibold text-light">{{ s.target }}</td>
-            <td><span class="badge bg-secondary-subtle text-light border border-secondary">{{ s.scan_type }}</span></td>
+            <td class="font-mono fw-semibold text-dark">{{ s.target }}</td>
+            <td><span class="badge bg-light text-dark border">{{ s.scan_type }}</span></td>
             <td class="text-muted small">{{ s.started_at[:19].replace('T', ' ') }}</td>
             <td><span class="badge cs-badge-{{ s.status }}">{{ s.status }}</span></td>
             <td>
@@ -171,7 +172,7 @@
       </table>
     </div>
     {% else %}
-    <div class="p-4 text-center">
+    <div class="p-5 text-center">
       <div class="text-muted mb-3"><i class="fa-solid fa-inbox fa-2x"></i></div>
       <p class="text-muted mb-3">No scans recorded yet. Start scanning an approved demo host.</p>
       <a href="{{ url_for('scan_page') }}" class="btn cs-btn-primary btn-sm">

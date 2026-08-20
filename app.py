@@ -114,6 +114,17 @@ def about():
     return render_template("about.html")
 
 
+@app.route("/privacy")
+def privacy_page():
+    return render_template("privacy.html")
+
+
+@app.route("/terms")
+def terms_page():
+    return render_template("terms.html")
+
+
+
 @app.route("/scan", methods=["GET"])
 def scan_page():
     return render_template(

@@ -7,22 +7,22 @@
 
     <!-- Header -->
     <div class="mb-4" data-animate="fade-up">
-      <h2 class="cs-section-title mb-1"><i class="fa-solid fa-circle-info"></i> Architecture &amp; Methodology</h2>
+      <h2 class="cs-section-title mb-1"><i class="fa-solid fa-circle-info text-secondary"></i> Architecture &amp; Methodology</h2>
       <p class="text-muted small mb-0">Overview of CyberSentinel's scanning pipeline, safety controls, and technological foundations.</p>
     </div>
 
     <!-- Workflow Section -->
     <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
       <h5 class="cs-card-title mb-4">
-        <i class="fa-solid fa-diagram-project"></i> End-to-End Audit Pipeline
+        <i class="fa-solid fa-diagram-project text-primary"></i> End-to-End Audit Pipeline
       </h5>
       
       <div class="row g-3">
         <div class="col-md-6">
-          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+          <div class="p-3 rounded-4 h-100" style="background: var(--cs-surface-subtle); border: 1.5px solid rgba(255, 255, 255, 0.9); box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(0, 0, 0, 0.04);">
             <div class="d-flex align-items-center gap-2 mb-2">
               <span class="badge cs-badge-running">Phase 1</span>
-              <strong class="text-light">Target Allowlist Check</strong>
+              <strong class="text-dark">Target Allowlist Check</strong>
             </div>
             <p class="text-muted small mb-0">
               Validates destination against hardcoded portfolio demonstration targets (e.g. <code>scanme.nmap.org</code>, localhost) or private RFC-1918 subnets.
@@ -31,10 +31,10 @@
         </div>
 
         <div class="col-md-6">
-          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+          <div class="p-3 rounded-4 h-100" style="background: var(--cs-surface-subtle); border: 1.5px solid rgba(255, 255, 255, 0.9); box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(0, 0, 0, 0.04);">
             <div class="d-flex align-items-center gap-2 mb-2">
               <span class="badge cs-badge-running">Phase 2</span>
-              <strong class="text-light">Nmap Discovery Engine</strong>
+              <strong class="text-dark">Nmap Discovery Engine</strong>
             </div>
             <p class="text-muted small mb-0">
               Executes asynchronous background Nmap scans for TCP port discovery, service version banner grabbing, and OS fingerprinting.
@@ -43,10 +43,10 @@
         </div>
 
         <div class="col-md-6">
-          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+          <div class="p-3 rounded-4 h-100" style="background: var(--cs-surface-subtle); border: 1.5px solid rgba(255, 255, 255, 0.9); box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(0, 0, 0, 0.04);">
             <div class="d-flex align-items-center gap-2 mb-2">
               <span class="badge cs-badge-running">Phase 3</span>
-              <strong class="text-light">Offline CVE Correlation</strong>
+              <strong class="text-dark">Offline CVE Correlation</strong>
             </div>
             <p class="text-muted small mb-0">
               Parses service banners against a curated offline vulnerability dataset, matching affected software versions without external runtime network dependencies.
@@ -55,10 +55,10 @@
         </div>
 
         <div class="col-md-6">
-          <div class="p-3 rounded bg-dark-subtle border border-secondary border-opacity-25 h-100">
+          <div class="p-3 rounded-4 h-100" style="background: var(--cs-surface-subtle); border: 1.5px solid rgba(255, 255, 255, 0.9); box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(0, 0, 0, 0.04);">
             <div class="d-flex align-items-center gap-2 mb-2">
               <span class="badge cs-badge-running">Phase 4</span>
-              <strong class="text-light">Risk Scoring &amp; PDF Build</strong>
+              <strong class="text-dark">Risk Scoring &amp; PDF Build</strong>
             </div>
             <p class="text-muted small mb-0">
               Computes a 0–100 composite risk score and dynamically compiles technical HTML dashboards alongside downloadable ReportLab PDF reports.
@@ -71,12 +71,12 @@
     <!-- Responsible Use & Ethics -->
     <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
       <h5 class="cs-card-title mb-3">
-        <i class="fa-solid fa-shield-halved"></i> Responsible Security Research &amp; Ethics
+        <i class="fa-solid fa-shield-halved text-secondary"></i> Responsible Security Research &amp; Ethics
       </h5>
       <p class="text-secondary small mb-3">
         CyberSentinel is strictly an <strong>educational portfolio project</strong>. It performs non-intrusive, read-only discovery and signature correlation. It contains no exploitation modules or brute-force tooling.
       </p>
-      <div class="p-3 rounded bg-danger-subtle border border-danger border-opacity-25 text-danger small">
+      <div class="p-3 rounded-4 small" style="background: linear-gradient(135deg, var(--cs-coral-subtle) 0%, #FFEBE5 100%); border: 1.5px solid var(--cs-coral-border); color: var(--cs-coral-dark); box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(201, 88, 66, 0.1);">
         <i class="fa-solid fa-triangle-exclamation me-1"></i>
         <strong>Legal Boundary:</strong> Scanning networks or computer systems without explicit, prior written authorization from the system owner is illegal under cybercrime legislation worldwide.
       </div>
@@ -85,30 +85,30 @@
     <!-- Tech Stack Grid -->
     <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
       <h5 class="cs-card-title mb-4">
-        <i class="fa-solid fa-layer-group"></i> Architecture &amp; Technology Stack
+        <i class="fa-solid fa-layer-group text-primary"></i> Architecture &amp; Technology Stack
       </h5>
       <div class="row g-4">
         <div class="col-md-6">
-          <h6 class="text-light fw-bold mb-3"><i class="fa-solid fa-server me-1 text-primary"></i> Backend &amp; Core</h6>
+          <h6 class="text-dark fw-bold mb-3"><i class="fa-solid fa-server me-1" style="color: var(--cs-blue-dark);"></i> Backend &amp; Core</h6>
           <div class="d-flex flex-wrap gap-2">
-            <span class="badge bg-dark-subtle text-light border border-secondary">Python 3.12</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Flask Framework</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">python-nmap</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">SQLite3</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">ReportLab (PDF Engine)</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Nginx &amp; Docker</span>
+            <span class="badge bg-light text-dark border">Python 3.12</span>
+            <span class="badge bg-light text-dark border">Flask Framework</span>
+            <span class="badge bg-light text-dark border">python-nmap</span>
+            <span class="badge bg-light text-dark border">SQLite3</span>
+            <span class="badge bg-light text-dark border">ReportLab (PDF Engine)</span>
+            <span class="badge bg-light text-dark border">Nginx &amp; Docker</span>
           </div>
         </div>
 
         <div class="col-md-6">
-          <h6 class="text-light fw-bold mb-3"><i class="fa-solid fa-desktop me-1 text-info"></i> Frontend &amp; Motion</h6>
+          <h6 class="text-dark fw-bold mb-3"><i class="fa-solid fa-desktop me-1" style="color: var(--cs-teal-dark);"></i> Frontend &amp; Motion</h6>
           <div class="d-flex flex-wrap gap-2">
-            <span class="badge bg-dark-subtle text-light border border-secondary">Lenis Smooth Scroll</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Animate UI Motion</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Bootstrap 5.3</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Chart.js</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">FontAwesome 6</span>
-            <span class="badge bg-dark-subtle text-light border border-secondary">Glassmorphism</span>
+            <span class="badge bg-light text-dark border">Claymorphism UI</span>
+            <span class="badge bg-light text-dark border">Inspira UI Bento Grid</span>
+            <span class="badge bg-light text-dark border">Lenis Smooth Scroll</span>
+            <span class="badge bg-light text-dark border">Space Grotesk</span>
+            <span class="badge bg-light text-dark border">Chart.js</span>
+            <span class="badge bg-light text-dark border">Color Hunt Palette</span>
           </div>
         </div>
       </div>
@@ -117,10 +117,10 @@
     <!-- Author & Disclaimer -->
     <div class="cs-card spotlight-card p-4 p-md-5" data-animate="fade-up">
       <h5 class="cs-card-title mb-3">
-        <i class="fa-solid fa-user-shield"></i> Author &amp; Portfolio Disclaimer
+        <i class="fa-solid fa-user-shield text-secondary"></i> Author &amp; Portfolio Disclaimer
       </h5>
       <p class="text-muted small mb-0">
-        Engineered by <strong>Md Mizan</strong> to demonstrate full-stack Python development, asynchronous architecture, and automated vulnerability assessment pipelines. Distributed under the MIT License.
+        Engineered by <strong class="text-dark">Md Mizan</strong> to demonstrate full-stack Python development, asynchronous architecture, and automated vulnerability assessment pipelines. Distributed under the MIT License.
       </p>
     </div>
 

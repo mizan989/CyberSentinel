@@ -7,14 +7,14 @@
   <div>
     <div class="d-flex align-items-center gap-2 mb-1">
       <h2 class="cs-section-title mb-0">
-        <i class="fa-solid fa-file-shield"></i> Security Audit Report #{{ scan.id }}
+        <i class="fa-solid fa-file-shield text-secondary"></i> Security Audit Report #{{ scan.id }}
       </h2>
       <span class="badge cs-badge-{{ scan.status }}">{{ scan.status }}</span>
     </div>
     <div class="text-muted font-mono small">
-      <i class="fa-solid fa-crosshairs me-1 text-accent"></i> Target: <strong class="text-light">{{ scan.target }}</strong>
+      <i class="fa-solid fa-crosshairs me-1" style="color: var(--cs-blue-dark);"></i> Target: <strong class="text-dark">{{ scan.target }}</strong>
       {% if scan.hostname and scan.hostname != scan.target %}
-        <span class="ms-2">({{ scan.hostname }})</span>
+        <span class="ms-2 text-secondary">({{ scan.hostname }})</span>
       {% endif %}
     </div>
   </div>
@@ -37,28 +37,28 @@
     <!-- General Info Card -->
     <div class="cs-card spotlight-card p-4 mb-4">
       <h5 class="cs-card-title mb-3">
-        <i class="fa-solid fa-circle-info"></i> Scan Metadata
+        <i class="fa-solid fa-circle-info text-primary"></i> Scan Metadata
       </h5>
       <table class="cs-table-plain mb-0">
         <tr>
           <th>Target Endpoint</th>
-          <td class="text-light">{{ scan.target }}</td>
+          <td class="text-dark font-mono">{{ scan.target }}</td>
         </tr>
         <tr>
           <th>Resolved Hostname</th>
-          <td>{{ scan.hostname or scan.target }}</td>
+          <td class="text-secondary font-mono">{{ scan.hostname or scan.target }}</td>
         </tr>
         <tr>
           <th>Scan Profile</th>
-          <td><span class="badge bg-dark-subtle text-light border border-secondary">{{ scan.scan_type }}</span></td>
+          <td><span class="badge bg-light text-dark border">{{ scan.scan_type }}</span></td>
         </tr>
         <tr>
           <th>Execution Date</th>
-          <td class="text-muted">{{ scan.started_at[:19].replace('T', ' ') }}</td>
+          <td class="text-muted small">{{ scan.started_at[:19].replace('T', ' ') }}</td>
         </tr>
         <tr>
           <th>Total Duration</th>
-          <td class="text-muted">{{ '%.2f'|format(scan.duration_seconds) + 's' if scan.duration_seconds else '—' }}</td>
+          <td class="text-muted font-mono small">{{ '%.2f'|format(scan.duration_seconds) + 's' if scan.duration_seconds else '—' }}</td>
         </tr>
         <tr>
           <th>Host Status</th>
@@ -77,9 +77,9 @@
     <!-- Operating System Detection Card -->
     <div class="cs-card spotlight-card p-4 mb-4">
       <h5 class="cs-card-title mb-2">
-        <i class="fa-brands fa-linux"></i> Operating System Heuristics
+        <i class="fa-brands fa-linux text-secondary"></i> Operating System Heuristics
       </h5>
-      <p class="font-mono text-light mb-0" style="font-size: 0.95rem;">
+      <p class="font-mono text-dark mb-0" style="font-size: 0.95rem;">
         {{ scan.os_guess or 'OS details could not be determined (requires elevated permissions or responsive TCP probes).' }}
       </p>
     </div>
@@ -88,9 +88,9 @@
     <div class="cs-card spotlight-card p-4 mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="cs-card-title mb-0">
-          <i class="fa-solid fa-network-wired"></i> Open Ports &amp; Detected Services
+          <i class="fa-solid fa-network-wired text-info"></i> Open Ports &amp; Detected Services
         </h5>
-        <span class="badge bg-secondary-subtle text-light">{{ scan.services|length }} Services</span>
+        <span class="badge cs-badge-finished">{{ scan.services|length }} Services</span>
       </div>
 
       {% if scan.services %}
@@ -108,9 +108,9 @@
           <tbody>
             {% for s in scan.services %}
             <tr>
-              <td class="font-mono fw-bold text-accent">{{ s.port }}</td>
+              <td class="font-mono fw-bold" style="color: var(--cs-blue-dark);">{{ s.port }}</td>
               <td class="font-mono text-muted text-uppercase small">{{ s.protocol }}</td>
-              <td class="fw-semibold text-light">{{ s.service }}</td>
+              <td class="fw-semibold text-dark">{{ s.service }}</td>
               <td class="font-mono text-secondary small">{{ s.version or '—' }}</td>
               <td><span class="badge cs-badge-finished">{{ s.state }}</span></td>
             </tr>
@@ -129,7 +129,7 @@
     <div class="cs-card spotlight-card p-4 mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="cs-card-title mb-0">
-          <i class="fa-solid fa-bug"></i> Matched Vulnerabilities &amp; CVEs
+          <i class="fa-solid fa-bug text-danger"></i> Matched Vulnerabilities &amp; CVEs
         </h5>
         <span class="badge cs-risk-{{ (scan.risk_level or 'low')|lower }}">
           {{ scan.vulnerabilities|length }} Matched
@@ -138,18 +138,18 @@
 
       {% if scan.vulnerabilities %}
         {% for v in scan.vulnerabilities %}
-        <div class="cs-vuln-card">
+        <div class="cs-vuln-card spotlight-card">
           <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
             <span class="badge cs-risk-{{ v.severity|lower }}">{{ v.severity }}</span>
-            <span class="font-mono fw-bold text-accent small">{{ v.cve }}</span>
+            <span class="font-mono fw-bold small" style="color: var(--cs-blue-dark);">{{ v.cve }}</span>
           </div>
-          <h6 class="fw-bold text-light mb-1">
+          <h6 class="fw-bold text-dark mb-1">
             <i class="fa-solid fa-server me-1 small text-muted"></i> {{ v.service }} {{ v.version }}
           </h6>
           <p class="text-secondary small mb-2">{{ v.description }}</p>
-          <div class="p-2 rounded bg-dark-subtle border border-secondary border-opacity-25 small">
-            <strong class="text-light"><i class="fa-solid fa-wrench me-1 text-warning"></i> Remediation:</strong>
-            <span class="text-muted">{{ v.recommendation }}</span>
+          <div class="cs-remediation-box small">
+            <strong class="text-dark"><i class="fa-solid fa-wrench me-1 text-warning"></i> Remediation:</strong>
+            <span class="text-secondary ms-1">{{ v.recommendation }}</span>
           </div>
         </div>
         {% endfor %}
@@ -163,7 +163,7 @@
     <!-- Remediation Guidance -->
     <div class="cs-card spotlight-card p-4">
       <h5 class="cs-card-title mb-2">
-        <i class="fa-solid fa-shield-halved"></i> Remediation Guidance
+        <i class="fa-solid fa-shield-halved text-primary"></i> Remediation Guidance
       </h5>
       <p class="text-muted small mb-0">
         CyberSentinel uses an offline demonstration database with deterministic substring matching. Before taking operational action on production networks, always independently verify banner grabs and validate potential vulnerabilities with formal CVE feeds.
@@ -173,12 +173,12 @@
   </div>
 
   <!-- Right Column: Risk Gauge & Severity Breakdown -->
-  <div class="col-lg-4" data-animate="fade-up" class="delay-200">
+  <div class="col-lg-4" data-animate="fade-up">
     
     <!-- Risk Score HUD Gauge -->
     <div class="cs-card spotlight-card p-4 mb-4 text-center">
       <h5 class="cs-card-title justify-content-center mb-3">
-        <i class="fa-solid fa-gauge-high"></i> Composite Risk Score
+        <i class="fa-solid fa-gauge-high text-secondary"></i> Composite Risk Score
       </h5>
       
       <div class="cs-risk-meter cs-risk-{{ (scan.risk_level or 'informational')|lower }}">
@@ -202,7 +202,7 @@
     {% if scan.vulnerabilities %}
     <div class="cs-card spotlight-card p-4 mb-4">
       <h5 class="cs-card-title justify-content-center mb-3">
-        <i class="fa-solid fa-chart-pie"></i> Severity Breakdown
+        <i class="fa-solid fa-chart-pie text-secondary"></i> Severity Breakdown
       </h5>
       <div style="position: relative; height: 230px;">
         <canvas id="severityChart"></canvas>
@@ -212,7 +212,7 @@
 
     <!-- Quick Action Export Card -->
     <div class="cs-card spotlight-card p-4 text-center">
-      <h6 class="fw-bold mb-2">Export Audit Documentation</h6>
+      <h6 class="fw-bold mb-2 text-dark">Export Audit Documentation</h6>
       <p class="text-muted small mb-3">Download complete printable PDF report containing technical scan details and risk findings.</p>
       {% if scan.status == 'finished' %}
       <a href="{{ url_for('report_pdf', scan_id=scan.id) }}" class="btn cs-btn-primary w-100">
@@ -249,11 +249,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const order = ["Critical", "High", "Medium", "Low", "Informational"];
   const colorMap = {
-    Critical: "#f43f5e",
-    High: "#f97316",
-    Medium: "#eab308",
-    Low: "#10b981",
-    Informational: "#0ea5e9"
+    Critical: "#FFB6A6",
+    High: "#F8A593",
+    Medium: "#F5DAC0",
+    Low: "#9BCEC1",
+    Informational: "#67A2C5"
   };
 
   const labels = order.filter(function (k) { return counts[k]; });
@@ -269,20 +269,20 @@ document.addEventListener("DOMContentLoaded", function () {
         datasets: [{
           data: data,
           backgroundColor: bg,
-          borderColor: "#090d16",
-          borderWidth: 2,
-          hoverOffset: 4
+          borderColor: "#FFFFFF",
+          borderWidth: 3,
+          hoverOffset: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: "72%",
+        cutout: "70%",
         plugins: {
           legend: {
             position: "bottom",
             labels: {
-              color: "#94a3b8",
+              color: "#475569",
               font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
               padding: 14,
               usePointStyle: true,
@@ -290,14 +290,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           },
           tooltip: {
-            backgroundColor: "rgba(17, 24, 39, 0.95)",
-            titleColor: "#ffffff",
-            bodyColor: "#a5b4fc",
-            borderColor: "rgba(255, 255, 255, 0.1)",
-            borderWidth: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.96)",
+            titleColor: "#1E293B",
+            bodyColor: "#475569",
+            borderColor: "#E8DDD2",
+            borderWidth: 1.5,
             padding: 10,
-            cornerRadius: 8,
-            boxPadding: 4
+            cornerRadius: 12,
+            boxPadding: 4,
+            shadowColor: "rgba(80, 60, 45, 0.12)"
           }
         },
         animation: {

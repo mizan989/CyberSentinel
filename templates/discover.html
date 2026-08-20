@@ -8,13 +8,13 @@
     <!-- Page Header -->
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4" data-animate="fade-up">
       <div>
-        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-network-wired"></i> Local Network Discovery</h2>
+        <h2 class="cs-section-title mb-1"><i class="fa-solid fa-network-wired text-secondary"></i> Local Network Discovery</h2>
         <p class="text-muted small mb-0">
           Actively scans the local broadcast domain to identify live connected devices for authorized vulnerability auditing.
         </p>
       </div>
-      <span class="badge bg-dark-subtle text-info border border-secondary">
-        <i class="fa-solid fa-lock me-1"></i> Private Subnets Only
+      <span class="badge bg-light text-dark border">
+        <i class="fa-solid fa-lock text-success me-1"></i> Private Subnets Only
       </span>
     </div>
 
@@ -22,24 +22,27 @@
     <div class="cs-card spotlight-card p-4 mb-4" data-animate="fade-up">
       <div class="row g-3 align-items-end">
         <div class="col-md-7">
-          <label class="form-label fw-bold">Target Subnet (Optional)</label>
+          <label class="form-label fw-bold text-dark">Target Subnet (Optional)</label>
           <div class="input-group">
             <span class="input-group-text cs-input border-end-0 text-muted"><i class="fa-solid fa-diagram-project"></i></span>
-            <input type="text" class="form-control cs-input border-start-0 font-mono" id="subnetInput" placeholder="auto-detect (e.g. 192.168.1.0/24)">
+            <input type="text" class="form-control cs-input border-start-0 border-end-0 font-mono" id="subnetInput" placeholder="auto-detect (e.g. 192.168.1.0/24)">
+            <span class="input-group-text cs-input border-start-0 text-muted d-none d-sm-flex">
+              <span class="wm-kbd">Ctrl+K</span>
+            </span>
           </div>
           <div class="form-text text-muted small mt-1">
             Leave blank to automatically detect your active local network interface.
           </div>
         </div>
         <div class="col-md-5 text-md-end">
-          <button class="btn cs-btn-cyan btn-lg w-100 w-md-auto" id="discoverBtn">
+          <button class="btn cs-btn-teal btn-lg w-100 w-md-auto" id="discoverBtn">
             <i class="fa-solid fa-satellite-dish"></i> Scan Local Network
           </button>
         </div>
       </div>
 
       <!-- Live Discovery Progress -->
-      <div id="discoverStatusWrap" class="d-none mt-4 pt-3 border-top border-secondary border-opacity-25">
+      <div id="discoverStatusWrap" class="d-none mt-4 pt-3 border-top">
         <div class="d-flex align-items-center gap-3">
           <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
           <span id="discoverStatus" class="font-mono text-muted small">Probing network ARP / ICMP hosts...</span>
@@ -51,7 +54,7 @@
     <div id="resultsCard" class="cs-card spotlight-card p-4 d-none" data-animate="fade-up">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="cs-card-title mb-0">
-          <i class="fa-solid fa-laptop-code"></i> Live Hosts Found on <span id="subnetLabel" class="font-mono text-accent"></span>
+          <i class="fa-solid fa-laptop-code text-primary"></i> Live Hosts Found on <span id="subnetLabel" class="font-mono" style="color: var(--cs-blue-dark);"></span>
         </h5>
         <span id="deviceCountBadge" class="badge cs-badge-finished">0 Devices</span>
       </div>
@@ -71,9 +74,9 @@
         </table>
       </div>
 
-      <div class="p-3 mt-3 rounded bg-dark-subtle border border-secondary border-opacity-25">
+      <div class="p-3 mt-3 rounded" style="background: var(--cs-surface-subtle); border: 1px solid var(--cs-border);">
         <div class="d-flex align-items-start gap-2">
-          <i class="fa-solid fa-circle-info text-info mt-1"></i>
+          <i class="fa-solid fa-circle-info text-primary mt-1"></i>
           <small class="text-muted">
             MAC address and hardware vendor resolution require root/administrator privileges on the host system.
             IP addresses and hostnames are fully queryable under standard user permissions.
@@ -126,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         data.devices.forEach((d) => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td class="font-mono fw-bold text-light">
+            <td class="font-mono fw-bold text-dark">
               ${d.ip}
               ${d.is_this_device ? '<span class="badge cs-badge-finished ms-1">this device</span>' : ''}
             </td>

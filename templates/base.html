@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 5.3.3 CSS & FontAwesome 6.5.2 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
@@ -22,13 +22,6 @@
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <!-- Ambient Parallax Orbs Background -->
-  <div class="cs-parallax-canvas">
-    <div class="cs-orb cs-orb-1"></div>
-    <div class="cs-orb cs-orb-2"></div>
-    <div class="cs-orb cs-orb-3"></div>
-  </div>
-
   <!-- Floating Minimal Navbar -->
   <div class="container cs-navbar-container">
     <nav class="navbar navbar-expand-lg cs-navbar">
@@ -39,12 +32,8 @@
         <span>CyberSentinel</span>
       </a>
 
-      <button class="navbar-toggler cs-hamburger-btn collapsed border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="cs-hamburger-box">
-          <span class="cs-hamburger-line line-1"></span>
-          <span class="cs-hamburger-line line-2"></span>
-          <span class="cs-hamburger-line line-3"></span>
-        </span>
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars text-secondary"></i>
       </button>
 
       <div class="collapse navbar-collapse" id="navMain">
@@ -89,25 +78,43 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Modern Clean Footer -->
+  <!-- Modern Clean Minimal Footer -->
   <footer class="cs-footer">
     <div class="container">
       <div class="row align-items-center g-3">
-        <div class="col-md-6 text-center text-md-start">
+        <div class="col-md-5 text-center text-md-start">
           <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
             <span class="cs-pulse-dot"></span>
-            <span class="text-light fw-medium small">CyberSentinel Security Suite</span>
+            <span class="fw-bold small text-dark">CyberSentinel Security Suite</span>
           </div>
           <small class="text-muted">
-            Engineered by <strong class="text-light">Md Mizan</strong> for authorized demonstration and research.
+            Engineered by <strong class="text-dark">Md Mizan</strong> for authorized demonstration and research.
           </small>
         </div>
-        <div class="col-md-6 text-center text-md-end">
-          <div class="d-flex align-items-center justify-content-center justify-content-md-end gap-3 small">
-            <a href="{{ url_for('about') }}">Methodology</a>
+        
+        <div class="col-md-4 text-center">
+          <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 gap-md-3 small">
+            <a href="{{ url_for('about') }}" class="text-secondary">Methodology</a>
             <span class="text-muted">&bull;</span>
-            <a href="https://github.com/mizan989/CyberSentinel" target="_blank" rel="noopener noreferrer">
-              <i class="fa-brands fa-github me-1"></i> GitHub Repository
+            <a href="{{ url_for('privacy_page') }}" class="text-secondary">Privacy Policy</a>
+            <span class="text-muted">&bull;</span>
+            <a href="{{ url_for('terms_page') }}" class="text-secondary">Terms &amp; Conditions</a>
+          </div>
+        </div>
+
+        <div class="col-md-3 text-center text-md-end">
+          <div class="d-flex align-items-center justify-content-center justify-content-md-end gap-2">
+            <a href="https://github.com/mizan989" target="_blank" rel="noopener noreferrer" class="cs-social-icon cs-social-github" title="GitHub" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.instagram.com/mizanmohammadd" target="_blank" rel="noopener noreferrer" class="cs-social-icon cs-social-instagram" title="Instagram" aria-label="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/mizann989/" target="_blank" rel="noopener noreferrer" class="cs-social-icon cs-social-linkedin" title="LinkedIn" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a href="https://x.com/mizanmohammadd" target="_blank" rel="noopener noreferrer" class="cs-social-icon cs-social-x" title="X" aria-label="X">
+              <i class="fa-brands fa-x-twitter"></i>
             </a>
           </div>
         </div>

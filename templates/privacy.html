@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — CyberSentinel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+
+    <!-- Header -->
+    <div class="mb-4" data-animate="fade-up">
+      <div class="wm-tag mb-3" style="background: var(--cs-cream); color: var(--cs-cream-dark);">
+        <span class="wm-tag-pulse" style="color: var(--cs-blue-dark);"></span>
+        <span>Transparency &amp; Data Protection</span>
+      </div>
+      <h2 class="cs-section-title mb-1"><i class="fa-solid fa-user-shield text-secondary"></i> Privacy Policy</h2>
+      <p class="text-muted small mb-0">How CyberSentinel handles audit data, network telemetry, and host privacy.</p>
+    </div>
+
+    <!-- Core Privacy Principles Bento Grid -->
+    <div class="row g-4 mb-4" data-animate="fade-up">
+      <div class="col-md-6">
+        <div class="cs-card spotlight-card p-4 h-100">
+          <div class="cs-feature-icon cs-feature-icon-teal mb-3">
+            <i class="fa-solid fa-hard-drive"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">100% Local Execution</h5>
+          <p class="text-muted small mb-0">
+            CyberSentinel runs entirely on your local machine or self-hosted container. No audit targets, scan results, or vulnerability telemetry are ever transmitted to third-party cloud servers.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="cs-card spotlight-card p-4 h-100">
+          <div class="cs-feature-icon cs-feature-icon-blue mb-3">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Local SQLite Storage</h5>
+          <p class="text-muted small mb-0">
+            Historical scans, port listings, and risk scores are persisted locally in a private SQLite database (<code>database.db</code>). You maintain full ownership and control to purge or inspect records at any time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Privacy Terms -->
+    <div class="cs-card spotlight-card p-4 p-md-5 mb-4" data-animate="fade-up">
+      <h5 class="cs-card-title mb-4">
+        <i class="fa-solid fa-shield-halved text-primary"></i> Data Handling &amp; Security Measures
+      </h5>
+
+      <div class="d-flex flex-column gap-4">
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-network-wired text-secondary me-2"></i> 1. Network Discovery &amp; Target Information</h6>
+          <p class="text-secondary small mb-0">
+            When performing network discovery or port scanning, CyberSentinel only gathers standard TCP/IP response packets, service banners, and OS heuristics from hosts explicitly targeted or located within the user's private subnet.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-file-pdf text-danger me-2"></i> 2. Generated Reports &amp; Exports</h6>
+          <p class="text-secondary small mb-0">
+            Downloadable PDF audit reports generated via ReportLab are compiled locally on the server filesystem. Generated PDF artifacts are stored in the local <code>reports_output/</code> directory and are not shared or accessible outside your environment.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-cookie-bite text-warning me-2"></i> 3. Cookies &amp; Tracking Technologies</h6>
+          <p class="text-secondary small mb-0">
+            CyberSentinel does not use commercial tracking cookies, analytics SDKs, advertising trackers, or fingerprinting scripts. Session state is handled locally without third-party tracking identifiers.
+          </p>
+        </div>
+
+        <div>
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-link text-info me-2"></i> 4. External Links</h6>
+          <p class="text-secondary small mb-0">
+            This application contains links to external developer profiles (GitHub, LinkedIn, Instagram, X). We are not responsible for the privacy practices or content of external third-party websites.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact & Revisions Card -->
+    <div class="cs-card spotlight-card p-4 text-center" data-animate="fade-up">
+      <h6 class="fw-bold text-dark mb-1">Questions Regarding Privacy?</h6>
+      <p class="text-muted small mb-3">Reach out via GitHub or social channels for inquiries regarding local data handling or methodology.</p>
+      <a href="https://github.com/mizan989/CyberSentinel" target="_blank" rel="noopener noreferrer" class="btn cs-btn-outline btn-sm">
+        <i class="fa-brands fa-github me-1"></i> Visit GitHub Project
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
